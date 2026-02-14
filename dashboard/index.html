@@ -21,6 +21,11 @@
   <div id="root"></div>
 
   <script type="text/babel">
+    // BELANGRIJKE CONFIGURATIE:
+    // Vervang deze URL met jullie eigen GitHub raw URL na deployment
+    // Formaat: https://raw.githubusercontent.com/JULLIE-USERNAME/JULLIE-REPO/main/data.json
+    const GITHUB_DATA_URL = './data.json'; // Werkt voor Netlify deployment
+
     const { useState, useEffect } = React;
     const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
 
@@ -40,6 +45,23 @@
       <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12h14" />
         <path d="M12 5v14" />
+      </svg>
+    );
+
+    const Download = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" x2="12" y1="15" y2="3" />
+      </svg>
+    );
+
+    const RefreshCw = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+        <path d="M21 3v5h-5" />
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+        <path d="M3 21v-5h5" />
       </svg>
     );
 
@@ -95,15 +117,12 @@
     );
 
     function YouTubeBattleTracker() {
-      const [channels, setChannels] = useState([
-        { id: 'channel1', name: 'K1 - Monte', owner: 'vc', color: '#3B82F6' },
-        { id: 'channel2', name: 'K2 - Spyff', owner: 'vc', color: '#8B5CF6' },
-        { id: 'channel3', name: 'Kanaal Tibbe', owner: 'th', color: '#EF4444' }
-      ]);
+      const [channels, setChannels] = useState([]);
       const [stats, setStats] = useState([]);
       const [loading, setLoading] = useState(true);
       const [showAddForm, setShowAddForm] = useState(false);
       const [activeTab, setActiveTab] = useState('overview');
+      const [hasLocalChanges, setHasLocalChanges] = useState(false);
       const [newEntry, setNewEntry] = useState({
         channelId: 'channel1',
         subs: '',
@@ -114,34 +133,22 @@
       const MONETIZATION_TARGET = 18000000;
 
       useEffect(() => {
-        loadData();
+        loadDataFromGitHub();
       }, []);
 
-      const loadData = () => {
+      const loadDataFromGitHub = async () => {
+        setLoading(true);
         try {
-          const channelsData = localStorage.getItem('youtube-channels');
-          const statsData = localStorage.getItem('youtube-stats');
-          
-          if (channelsData) {
-            setChannels(JSON.parse(channelsData));
-          }
-          if (statsData) {
-            setStats(JSON.parse(statsData));
-          }
+          const response = await fetch(GITHUB_DATA_URL + '?cache=' + Date.now());
+          const data = await response.json();
+          setChannels(data.channels || []);
+          setStats(data.stats || []);
+          setHasLocalChanges(false);
         } catch (error) {
-          console.log('Eerste keer laden - geen data gevonden');
+          console.error('Fout bij laden van data:', error);
+          alert('Kon data niet laden van GitHub. Controleer of data.json bestaat.');
         }
         setLoading(false);
-      };
-
-      const saveData = (newStats, newChannels = channels) => {
-        try {
-          localStorage.setItem('youtube-stats', JSON.stringify(newStats));
-          localStorage.setItem('youtube-channels', JSON.stringify(newChannels));
-        } catch (error) {
-          console.error('Fout bij opslaan:', error);
-          alert('Kon data niet opslaan. Probeer opnieuw.');
-        }
       };
 
       const addEntry = () => {
@@ -161,7 +168,7 @@
 
         const newStats = [...stats, entry].sort((a, b) => a.timestamp - b.timestamp);
         setStats(newStats);
-        saveData(newStats);
+        setHasLocalChanges(true);
         
         setNewEntry({
           channelId: 'channel1',
@@ -172,12 +179,22 @@
         setShowAddForm(false);
       };
 
-      const updateChannelName = (channelId, newName) => {
-        const newChannels = channels.map(ch => 
-          ch.id === channelId ? { ...ch, name: newName } : ch
-        );
-        setChannels(newChannels);
-        saveData(stats, newChannels);
+      const exportData = () => {
+        const dataToExport = {
+          channels: channels,
+          stats: stats
+        };
+        
+        const dataStr = JSON.stringify(dataToExport, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'data.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       };
 
       const getLatestStats = (channelId) => {
@@ -755,7 +772,21 @@
               <p className="text-purple-200">Race naar monetizatie - 18M views!</p>
             </div>
 
-            <div className="mb-6">
+            {/* Warning banner voor lokale wijzigingen */}
+            {hasLocalChanges && (
+              <div className="bg-yellow-500/20 border-2 border-yellow-500 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="text-yellow-400 text-2xl">⚠️</div>
+                  <div className="flex-1">
+                    <div className="text-yellow-100 font-bold">Lokale Wijzigingen Niet Opgeslagen!</div>
+                    <div className="text-yellow-200 text-sm">Klik op "Export Data" om de nieuwe data.json te downloaden, en commit hem naar GitHub.</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Control Buttons */}
+            <div className="flex flex-wrap gap-3 mb-6">
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg"
@@ -763,6 +794,34 @@
                 <Plus size={20} />
                 {showAddForm ? 'Annuleren' : 'Nieuwe Stats Toevoegen'}
               </button>
+
+              <button
+                onClick={exportData}
+                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
+              >
+                <Download size={20} />
+                Export Data (voor GitHub)
+              </button>
+
+              <button
+                onClick={loadDataFromGitHub}
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg"
+              >
+                <RefreshCw size={20} />
+                Reload van GitHub
+              </button>
+            </div>
+
+            {/* Instructions */}
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6">
+              <div className="text-blue-100 font-bold mb-2">📝 Hoe te gebruiken:</div>
+              <ol className="text-blue-200 text-sm space-y-1 list-decimal list-inside">
+                <li>Voeg nieuwe stats toe met de "Nieuwe Stats Toevoegen" knop</li>
+                <li>Klik op "Export Data" om de data.json te downloaden</li>
+                <li>Vervang de data.json in jullie GitHub repo met de nieuwe versie</li>
+                <li>Push naar GitHub: <code className="bg-black/30 px-2 py-1 rounded">git add data.json && git commit -m "Update stats" && git push</code></li>
+                <li>De ander kan dan op "Reload van GitHub" klikken om de nieuwste data te zien</li>
+              </ol>
             </div>
 
             {showAddForm && (

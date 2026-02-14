@@ -2,6 +2,8 @@
 
 Een interactieve dashboard om YouTube kanalen te vergelijken en de race naar monetizatie te volgen!
 
+**Vincent (Monte & Spyff) vs Tibbe**
+
 ## Features ✨
 
 - 📊 **1v1 Battle Overzicht** - Vergelijk elk kanaal individueel
@@ -9,39 +11,116 @@ Een interactieve dashboard om YouTube kanalen te vergelijken en de race naar mon
 - 📜 **Historische Data** - Zie alle oude statistieken en veranderingen
 - 🎯 **Monetizatie Progress** - Track voortgang naar 18M views
 - ⚡ **Groeisnelheid** - Zie hoeveel views/subs per dag elk kanaal groeit
+- 💾 **GitHub Data Storage** - Data wordt opgeslagen in GitHub voor gedeelde toegang
 - 📱 **Responsive** - Werkt op desktop, tablet en mobiel
 
 ## Deployment op Netlify 🚀
 
-### Via GitHub
+### Stap 1: GitHub Repository Setup
 
-1. Push deze repo naar GitHub
-2. Ga naar [Netlify](https://www.netlify.com)
-3. Klik op "Add new site" → "Import an existing project"
-4. Selecteer GitHub en kies deze repository
-5. Deploy settings:
+1. Maak een nieuwe GitHub repository (bijvoorbeeld `youtube-battle-tracker`)
+2. Upload deze bestanden naar de repo:
+   - `index.html`
+   - `data.json`
+   - `netlify.toml`
+   - `README.md`
+   - `.gitignore`
+   - `package.json`
+
+### Stap 2: Netlify Deployment
+
+1. Ga naar [Netlify](https://www.netlify.com)
+2. Klik op "Add new site" → "Import an existing project"
+3. Selecteer GitHub en kies jullie repository
+4. Deploy settings:
    - Build command: (leeg laten)
    - Publish directory: `.`
-6. Klik op "Deploy site"
+5. Klik op "Deploy site"
 
 Je site is nu live op een URL zoals: `https://jouw-app-naam.netlify.app`
 
-### Custom Domain (optioneel)
+### Stap 3: Auto-deployment instellen
 
-In Netlify dashboard:
-1. Ga naar "Domain settings"
-2. Klik op "Add custom domain"
-3. Volg de instructies
+Netlify zal automatisch re-deployen wanneer jullie pushen naar GitHub. Dit betekent:
+- Push naar main branch → Automatische deployment binnen 1 minuut
+- Ververs de browser om nieuwe data te zien
 
-## Gebruik 📝
+## Dagelijkse Workflow 📝
+
+### Data Toevoegen (Vincent of Tibbe):
+
+1. Open de live site: `https://jouw-app-naam.netlify.app`
+2. Klik op **"Nieuwe Stats Toevoegen"**
+3. Vul subscribers en views in voor alle kanalen
+4. Klik op **"Export Data (voor GitHub)"**
+5. Dit downloadt een nieuwe `data.json` file
+
+### Data Pushen naar GitHub:
+
+```bash
+# In je lokale repo folder:
+# Vervang de oude data.json met de nieuwe gedownloade versie
+
+git add data.json
+git commit -m "Update stats - [datum]"
+git push
+```
+
+### Data Ophalen (de ander):
+
+1. Wacht ~1 minuut tot Netlify deployed
+2. Open de site en klik op **"Reload van GitHub"**
+3. Je ziet nu de nieuwste stats!
+
+**Of** gewoon de pagina refreshen (F5) - de data wordt automatisch opnieuw geladen.
+
+## File Structuur 📁
+
+```
+youtube-battle-tracker/
+├── index.html          # De main app
+├── data.json          # Alle stats & kanaal config
+├── netlify.toml       # Netlify configuratie
+├── README.md          # Deze file
+├── .gitignore         # Git ignore rules
+└── package.json       # Project metadata
+```
+
+## Data Format (`data.json`)
+
+```json
+{
+  "channels": [
+    {
+      "id": "channel1",
+      "name": "K1 - Monte",
+      "owner": "vincent",
+      "color": "#3B82F6"
+    },
+    ...
+  ],
+  "stats": [
+    {
+      "id": 1234567890,
+      "channelId": "channel1",
+      "subs": 1500,
+      "views": 250000,
+      "date": "2025-02-14",
+      "timestamp": 1739491200000
+    },
+    ...
+  ]
+}
+```
+
+## Gebruik 🎮
 
 1. Klik op "Nieuwe Stats Toevoegen"
-2. Kies het kanaal
+2. Kies het kanaal (Monte, Spyff, of Tibbe)
 3. Vul subscribers en views in
 4. Kies de datum
 5. Klik op "Opslaan"
-
-Data wordt automatisch bewaard in je browser!
+6. Export data en push naar GitHub
 
 ## Tabs
 
@@ -54,27 +133,30 @@ Data wordt automatisch bewaard in je browser!
 - React 18
 - Recharts (grafieken)
 - Tailwind CSS
-- localStorage (data opslag)
+- GitHub (data storage)
+- Netlify (hosting + auto-deployment)
 
-## Belangrijk ⚠️
+## Tips 💡
 
-**Data Opslag**: Deze versie gebruikt localStorage, wat betekent dat data alleen lokaal in je browser wordt opgeslagen. Als je de app op een ander apparaat opent, zie je die data niet.
+- **Auto-deployment**: Elke push naar GitHub triggert een nieuwe deployment (duurt ~1 min)
+- **Refresh**: Druk F5 of klik "Reload van GitHub" om nieuwe data te zien
+- **Dagelijkse ritual**: 1x per dag stats toevoegen en pushen
+- **Data backup**: GitHub is automatisch je backup - alle history is bewaard in commits
 
-Voor gedeelde data tussen meerdere gebruikers/apparaten, heb je een backend nodig (zoals Firebase of Supabase).
+## Troubleshooting 🔧
 
-## Kanalen Aanpassen
+**"Kon data niet laden van GitHub"**
+- Controleer of `data.json` bestaat in de repo
+- Wacht tot Netlify klaar is met deployen
 
-Open `index.html` en zoek naar deze regel (rond regel 60):
+**"Ik zie oude data"**
+- Klik op "Reload van GitHub"
+- Of refresh de pagina (F5)
+- Check of je laatste push succesvol was
 
-```javascript
-const [channels, setChannels] = useState([
-  { id: 'channel1', name: 'K1 - Monte', owner: 'vc', color: '#3B82F6' },
-  { id: 'channel2', name: 'K2 - Spyff', owner: 'vc', color: '#8B5CF6' },
-  { id: 'channel3', name: 'Kanaal Tibbe', owner: 'th', color: '#EF4444' }
-]);
-```
-
-Pas de namen aan naar je eigen kanalen!
+**Lokale wijzigingen niet zichtbaar**
+- Vergeet niet te exporteren en pushen naar GitHub!
+- De gele waarschuwing toont of je dit nog moet doen
 
 ## Browser Compatibiliteit
 

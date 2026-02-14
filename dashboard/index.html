@@ -4,11 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTube Battle Tracker</title>
+  <!-- React -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/recharts@2.5.0/dist/Recharts.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Recharts dependencies -->
+  <script src="https://unpkg.com/prop-types@15/prop-types.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.1.16/dist/Recharts.js"></script>
+  
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -28,6 +35,23 @@
     const GITHUB_DATA_URL = './data.json'; // Werkt voor Netlify deployment
 
     const { useState, useEffect } = React;
+    
+    // Check if Recharts is loaded
+    if (typeof Recharts === 'undefined') {
+      document.getElementById('root').innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(to bottom right, #1e293b, #581c87, #1e293b); color: white; padding: 20px; text-align: center;">
+          <div>
+            <h1 style="font-size: 2rem; margin-bottom: 1rem;">⚠️ Loading Error</h1>
+            <p style="margin-bottom: 1rem;">Recharts library kon niet worden geladen. Refresh de pagina (F5).</p>
+            <button onclick="location.reload()" style="background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">
+              🔄 Refresh Pagina
+            </button>
+          </div>
+        </div>
+      `;
+      throw new Error('Recharts not loaded');
+    }
+    
     const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
 
     // Lucide Icons als inline SVG

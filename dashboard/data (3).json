@@ -1,0 +1,48 @@
+{
+  "channels": [
+    {
+      "id": "channel1",
+      "name": "K1 - Monte",
+      "owner": "vincent",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "channel2",
+      "name": "K2 - Spyff",
+      "owner": "vincent",
+      "color": "#8B5CF6"
+    },
+    {
+      "id": "channel3",
+      "name": "Kanaal Tibbe",
+      "owner": "tibbe",
+      "color": "#EF4444"
+    }
+  ],
+  "stats": [
+    {
+      "id": 1771079998596,
+      "channelId": "channel1",
+      "subs": 394,
+      "views": 1100000,
+      "date": "2026-02-05",
+      "timestamp": 1770249600000
+    },
+    {
+      "id": 1771080131787,
+      "channelId": "channel2",
+      "subs": 460,
+      "views": 422100,
+      "date": "2026-02-05",
+      "timestamp": 1770249600000
+    },
+    {
+      "id": 1771080146360,
+      "channelId": "channel3",
+      "subs": 1765,
+      "views": 34000,
+      "date": "2026-02-05",
+      "timestamp": 1770249600000
+    }
+  ]
+}

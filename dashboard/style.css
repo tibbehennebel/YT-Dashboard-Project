@@ -1,0 +1,9 @@
+body { font-family: system-ui, sans-serif; margin: 2rem; background:#111; color:#eee; }
+h1 { margin-bottom:1rem; }
+.forms { display:flex; gap:1rem; flex-wrap:wrap; }
+.card { background:#1d1d1d; padding:1rem; border-radius:8px; min-width:260px; }
+label { display:block; margin-bottom:0.5rem; }
+input, select, button { width:100%; padding:0.4rem; margin-top:0.2rem; }
+button { margin-top:0.6rem; cursor:pointer; }
+table { width:100%; border-collapse:collapse; margin-top:1rem; }
+th, td { padding:0.4rem; border-bottom:1px solid #333; text-align:left; }

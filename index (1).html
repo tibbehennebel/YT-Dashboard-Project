@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Battle Tracker</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
+
+    // Lucide Icons als inline SVG
+    const Trophy = ({ size = 24, className = "" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+        <path d="M4 22h16" />
+        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+      </svg>
+    );
+
+    const Plus = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+      </svg>
+    );
+
+    const Eye = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    );
+
+    const Users = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    );
+
+    const TrendingUp = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+        <polyline points="16 7 22 7 22 13" />
+      </svg>
+    );
+
+    const History = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+        <path d="M12 7v5l4 2" />
+      </svg>
+    );
+
+    const Zap = ({ size = 24, style = {} }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style}>
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    );
+
+    const ArrowUp = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m5 12 7-7 7 7" />
+        <path d="M12 19V5" />
+      </svg>
+    );
+
+    const ArrowDown = ({ size = 24 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 5v14" />
+        <path d="m19 12-7 7-7-7" />
+      </svg>
+    );
+
+    function YouTubeBattleTracker() {
+      const [channels, setChannels] = useState([
+        { id: 'channel1', name: 'K1 - Monte', owner: 'vc', color: '#3B82F6' },
+        { id: 'channel2', name: 'K2 - Spyff', owner: 'vc', color: '#8B5CF6' },
+        { id: 'channel3', name: 'Kanaal Tibbe', owner: 'th', color: '#EF4444' }
+      ]);
+      const [stats, setStats] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [showAddForm, setShowAddForm] = useState(false);
+      const [activeTab, setActiveTab] = useState('overview');
+      const [newEntry, setNewEntry] = useState({
+        channelId: 'channel1',
+        subs: '',
+        views: '',
+        date: new Date().toISOString().split('T')[0]
+      });
+
+      const MONETIZATION_TARGET = 18000000;
+
+      useEffect(() => {
+        loadData();
+      }, []);
+
+      const loadData = () => {
+        try {
+          const channelsData = localStorage.getItem('youtube-channels');
+          const statsData = localStorage.getItem('youtube-stats');
+          
+          if (channelsData) {
+            setChannels(JSON.parse(channelsData));
+          }
+          if (statsData) {
+            setStats(JSON.parse(statsData));
+          }
+        } catch (error) {
+          console.log('Eerste keer laden - geen data gevonden');
+        }
+        setLoading(false);
+      };
+
+      const saveData = (newStats, newChannels = channels) => {
+        try {
+          localStorage.setItem('youtube-stats', JSON.stringify(newStats));
+          localStorage.setItem('youtube-channels', JSON.stringify(newChannels));
+        } catch (error) {
+          console.error('Fout bij opslaan:', error);
+          alert('Kon data niet opslaan. Probeer opnieuw.');
+        }
+      };
+
+      const addEntry = () => {
+        if (!newEntry.subs || !newEntry.views) {
+          alert('Vul alle velden in!');
+          return;
+        }
+
+        const entry = {
+          id: Date.now(),
+          channelId: newEntry.channelId,
+          subs: parseInt(newEntry.subs),
+          views: parseInt(newEntry.views),
+          date: newEntry.date,
+          timestamp: new Date(newEntry.date).getTime()
+        };
+
+        const newStats = [...stats, entry].sort((a, b) => a.timestamp - b.timestamp);
+        setStats(newStats);
+        saveData(newStats);
+        
+        setNewEntry({
+          channelId: 'channel1',
+          subs: '',
+          views: '',
+          date: new Date().toISOString().split('T')[0]
+        });
+        setShowAddForm(false);
+      };
+
+      const updateChannelName = (channelId, newName) => {
+        const newChannels = channels.map(ch => 
+          ch.id === channelId ? { ...ch, name: newName } : ch
+        );
+        setChannels(newChannels);
+        saveData(stats, newChannels);
+      };
+
+      const getLatestStats = (channelId) => {
+        const channelStats = stats.filter(s => s.channelId === channelId);
+        if (channelStats.length === 0) return { subs: 0, views: 0 };
+        return channelStats[channelStats.length - 1];
+      };
+
+      const getAllChannelsHistory = () => {
+        const dates = [...new Set(stats.map(s => s.date))].sort();
+        return dates.map(date => {
+          const entry = { date: new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) };
+          channels.forEach(channel => {
+            const stat = stats.find(s => s.date === date && s.channelId === channel.id);
+            entry[channel.id + '_views'] = stat?.views || 0;
+            entry[channel.id + '_subs'] = stat?.subs || 0;
+          });
+          return entry;
+        });
+      };
+
+      const formatNumber = (num) => {
+        if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+      };
+
+      const getGrowth = (channelId) => {
+        const channelStats = stats.filter(s => s.channelId === channelId);
+        if (channelStats.length < 2) return { subsGrowth: 0, viewsGrowth: 0 };
+        
+        const latest = channelStats[channelStats.length - 1];
+        const previous = channelStats[channelStats.length - 2];
+        
+        return {
+          subsGrowth: latest.subs - previous.subs,
+          viewsGrowth: latest.views - previous.views
+        };
+      };
+
+      const getAverageGrowthRate = (channelId) => {
+        const channelStats = stats.filter(s => s.channelId === channelId);
+        if (channelStats.length < 2) return { subsPerDay: 0, viewsPerDay: 0 };
+        
+        const first = channelStats[0];
+        const latest = channelStats[channelStats.length - 1];
+        const daysDiff = (latest.timestamp - first.timestamp) / (1000 * 60 * 60 * 24);
+        
+        if (daysDiff === 0) return { subsPerDay: 0, viewsPerDay: 0 };
+        
+        return {
+          subsPerDay: (latest.subs - first.subs) / daysDiff,
+          viewsPerDay: (latest.views - first.views) / daysDiff
+        };
+      };
+
+      const getDifferenceHistory = (channel1Id, channel2Id) => {
+        const dates = [...new Set(stats.map(s => s.date))].sort();
+        return dates.map(date => {
+          const ch1 = stats.find(s => s.date === date && s.channelId === channel1Id);
+          const ch2 = stats.find(s => s.date === date && s.channelId === channel2Id);
+          
+          if (!ch1 || !ch2) return null;
+          
+          return {
+            date: new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }),
+            viewsDiff: ch1.views - ch2.views,
+            subsDiff: ch1.subs - ch2.subs
+          };
+        }).filter(Boolean);
+      };
+
+      const getGrowthRateHistory = (channelId) => {
+        const channelStats = stats.filter(s => s.channelId === channelId);
+        const growthData = [];
+        
+        for (let i = 1; i < channelStats.length; i++) {
+          const current = channelStats[i];
+          const previous = channelStats[i - 1];
+          const daysDiff = (current.timestamp - previous.timestamp) / (1000 * 60 * 60 * 24);
+          
+          if (daysDiff > 0) {
+            growthData.push({
+              date: new Date(current.date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }),
+              subsPerDay: (current.subs - previous.subs) / daysDiff,
+              viewsPerDay: (current.views - previous.views) / daysDiff
+            });
+          }
+        }
+        
+        return growthData;
+      };
+
+      const combinedHistory = getAllChannelsHistory();
+      const myChannel1 = channels.find(ch => ch.id === 'channel1');
+      const myChannel2 = channels.find(ch => ch.id === 'channel2');
+      const friendChannel = channels.find(ch => ch.id === 'channel3');
+
+      if (loading) {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+            <div className="text-white text-xl">Laden...</div>
+          </div>
+        );
+      }
+
+      const renderOverview = () => {
+        const ch1Latest = getLatestStats('channel1');
+        const ch2Latest = getLatestStats('channel2');
+        const friendLatest = getLatestStats('channel3');
+
+        const battle1 = {
+          myChannel: myChannel1,
+          myStats: ch1Latest,
+          friendStats: friendLatest,
+          myGrowth: getGrowth('channel1'),
+          friendGrowth: getGrowth('channel3'),
+          myGrowthRate: getAverageGrowthRate('channel1'),
+          friendGrowthRate: getAverageGrowthRate('channel3')
+        };
+
+        const battle2 = {
+          myChannel: myChannel2,
+          myStats: ch2Latest,
+          friendStats: friendLatest,
+          myGrowth: getGrowth('channel2'),
+          friendGrowth: getGrowth('channel3'),
+          myGrowthRate: getAverageGrowthRate('channel2'),
+          friendGrowthRate: getAverageGrowthRate('channel3')
+        };
+
+        const renderBattleCard = (battle, battleNumber) => {
+          const viewsLeader = battle.myStats.views > battle.friendStats.views ? 'me' : 'friend';
+          const subsLeader = battle.myStats.subs > battle.friendStats.subs ? 'me' : 'friend';
+          const viewsDiff = Math.abs(battle.myStats.views - battle.friendStats.views);
+          const subsDiff = Math.abs(battle.myStats.subs - battle.friendStats.subs);
+
+          return (
+            <div key={battleNumber} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+              <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <Trophy className="text-yellow-400" />
+                Battle #{battleNumber}: {battle.myChannel.name} vs {friendChannel.name}
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-lg p-4 border border-blue-400/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: battle.myChannel.color }} />
+                    <h4 className="text-lg font-bold text-white">{battle.myChannel.name}</h4>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200 text-sm">Views</span>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-white">{formatNumber(battle.myStats.views)}</div>
+                        {battle.myGrowth.viewsGrowth !== 0 && (
+                          <div className={`text-xs ${battle.myGrowth.viewsGrowth > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {battle.myGrowth.viewsGrowth > 0 ? '+' : ''}{formatNumber(battle.myGrowth.viewsGrowth)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200 text-sm">Subs</span>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-white">{formatNumber(battle.myStats.subs)}</div>
+                        {battle.myGrowth.subsGrowth !== 0 && (
+                          <div className={`text-xs ${battle.myGrowth.subsGrowth > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {battle.myGrowth.subsGrowth > 0 ? '+' : ''}{formatNumber(battle.myGrowth.subsGrowth)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-white/20">
+                      <div className="text-purple-200 text-xs mb-1">Groeisnelheid</div>
+                      <div className="text-sm text-white">{formatNumber(battle.myGrowthRate.viewsPerDay)} views/dag</div>
+                      <div className="text-sm text-white">{formatNumber(battle.myGrowthRate.subsPerDay)} subs/dag</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-red-600/20 to-orange-600/20 rounded-lg p-4 border border-red-400/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: friendChannel.color }} />
+                    <h4 className="text-lg font-bold text-white">{friendChannel.name}</h4>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200 text-sm">Views</span>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-white">{formatNumber(battle.friendStats.views)}</div>
+                        {battle.friendGrowth.viewsGrowth !== 0 && (
+                          <div className={`text-xs ${battle.friendGrowth.viewsGrowth > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {battle.friendGrowth.viewsGrowth > 0 ? '+' : ''}{formatNumber(battle.friendGrowth.viewsGrowth)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200 text-sm">Subs</span>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-white">{formatNumber(battle.friendStats.subs)}</div>
+                        {battle.friendGrowth.subsGrowth !== 0 && (
+                          <div className={`text-xs ${battle.friendGrowth.subsGrowth > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {battle.friendGrowth.subsGrowth > 0 ? '+' : ''}{formatNumber(battle.friendGrowth.subsGrowth)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-white/20">
+                      <div className="text-purple-200 text-xs mb-1">Groeisnelheid</div>
+                      <div className="text-sm text-white">{formatNumber(battle.friendGrowthRate.viewsPerDay)} views/dag</div>
+                      <div className="text-sm text-white">{formatNumber(battle.friendGrowthRate.subsPerDay)} subs/dag</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/5 rounded-lg p-3">
+                  <div className="text-purple-200 text-xs mb-1">Views Leader</div>
+                  <div className="text-lg font-bold text-white">
+                    {viewsLeader === 'me' ? battle.myChannel.name : friendChannel.name}
+                  </div>
+                  <div className="text-sm text-purple-200">
+                    Voorsprong: {formatNumber(viewsDiff)}
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-3">
+                  <div className="text-purple-200 text-xs mb-1">Subs Leader</div>
+                  <div className="text-lg font-bold text-white">
+                    {subsLeader === 'me' ? battle.myChannel.name : friendChannel.name}
+                  </div>
+                  <div className="text-sm text-purple-200">
+                    Voorsprong: {formatNumber(subsDiff)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        return (
+          <div className="space-y-6">
+            {renderBattleCard(battle1, 1)}
+            {renderBattleCard(battle2, 2)}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {channels.map(channel => {
+                const latest = getLatestStats(channel.id);
+                const progress = (latest.views / MONETIZATION_TARGET) * 100;
+                const remaining = MONETIZATION_TARGET - latest.views;
+                const growthRate = getAverageGrowthRate(channel.id);
+                const daysToMonetization = growthRate.viewsPerDay > 0 ? remaining / growthRate.viewsPerDay : null;
+                
+                return (
+                  <div key={channel.id} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: channel.color }} />
+                      <h4 className="text-lg font-bold text-white">{channel.name}</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-purple-200 text-sm mb-2">Naar Monetizatie</div>
+                        <div className="bg-white/20 rounded-full h-3 overflow-hidden mb-2">
+                          <div 
+                            className="h-full transition-all duration-500"
+                            style={{ 
+                              backgroundColor: channel.color,
+                              width: `${Math.min(progress, 100)}%`
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-purple-200">{progress.toFixed(1)}%</span>
+                          <span className="text-white font-bold">{formatNumber(remaining)} te gaan</span>
+                        </div>
+                      </div>
+                      
+                      {daysToMonetization && (
+                        <div className="bg-white/5 rounded-lg p-3">
+                          <div className="text-purple-200 text-xs mb-1">Geschatte tijd</div>
+                          <div className="text-lg font-bold text-white">
+                            {daysToMonetization < 1 ? '< 1 dag' : `${Math.ceil(daysToMonetization)} dagen`}
+                          </div>
+                          <div className="text-xs text-purple-200">bij huidige groeisnelheid</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      };
+
+      const renderCharts = () => {
+        const diff1History = getDifferenceHistory('channel1', 'channel3');
+        const diff2History = getDifferenceHistory('channel2', 'channel3');
+        
+        return (
+          <div className="space-y-6">
+            {combinedHistory.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Eye size={24} />
+                  Views Progressie - Alle Kanalen
+                </h3>
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={combinedHistory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="date" stroke="#fff" />
+                    <YAxis stroke="#fff" tickFormatter={formatNumber} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px' }}
+                      formatter={formatNumber}
+                    />
+                    <Legend />
+                    {channels.map(channel => (
+                      <Line 
+                        key={channel.id}
+                        type="monotone" 
+                        dataKey={`${channel.id}_views`} 
+                        stroke={channel.color}
+                        strokeWidth={3}
+                        name={channel.name}
+                        dot={{ fill: channel.color, r: 4 }}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {combinedHistory.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Users size={24} />
+                  Subscribers Progressie - Alle Kanalen
+                </h3>
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={combinedHistory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="date" stroke="#fff" />
+                    <YAxis stroke="#fff" tickFormatter={formatNumber} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px' }}
+                      formatter={formatNumber}
+                    />
+                    <Legend />
+                    {channels.map(channel => (
+                      <Line 
+                        key={channel.id}
+                        type="monotone" 
+                        dataKey={`${channel.id}_subs`} 
+                        stroke={channel.color}
+                        strokeWidth={3}
+                        name={channel.name}
+                        dot={{ fill: channel.color, r: 4 }}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {diff1History.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <TrendingUp size={24} />
+                  Verschil: {myChannel1.name} vs {friendChannel.name}
+                </h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={diff1History}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="date" stroke="#fff" />
+                    <YAxis stroke="#fff" tickFormatter={formatNumber} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px' }}
+                      formatter={(value) => {
+                        const sign = value >= 0 ? '+' : '';
+                        return sign + formatNumber(value);
+                      }}
+                    />
+                    <Legend />
+                    <Area 
+                      type="monotone" 
+                      dataKey="viewsDiff" 
+                      stroke="#3B82F6"
+                      fill="#3B82F6"
+                      fillOpacity={0.3}
+                      name="Views Verschil"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+                <p className="text-purple-200 text-sm mt-2 text-center">
+                  Positief = {myChannel1.name} leidt, Negatief = {friendChannel.name} leidt
+                </p>
+              </div>
+            )}
+
+            {diff2History.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <TrendingUp size={24} />
+                  Verschil: {myChannel2.name} vs {friendChannel.name}
+                </h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={diff2History}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="date" stroke="#fff" />
+                    <YAxis stroke="#fff" tickFormatter={formatNumber} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px' }}
+                      formatter={(value) => {
+                        const sign = value >= 0 ? '+' : '';
+                        return sign + formatNumber(value);
+                      }}
+                    />
+                    <Legend />
+                    <Area 
+                      type="monotone" 
+                      dataKey="viewsDiff" 
+                      stroke="#8B5CF6"
+                      fill="#8B5CF6"
+                      fillOpacity={0.3}
+                      name="Views Verschil"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+                <p className="text-purple-200 text-sm mt-2 text-center">
+                  Positief = {myChannel2.name} leidt, Negatief = {friendChannel.name} leidt
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {channels.map(channel => {
+                const growthHistory = getGrowthRateHistory(channel.id);
+                if (growthHistory.length === 0) return null;
+
+                return (
+                  <div key={channel.id} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <Zap size={20} style={{ color: channel.color }} />
+                      {channel.name} - Groeisnelheid
+                    </h4>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={growthHistory}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <XAxis dataKey="date" stroke="#fff" tick={{ fontSize: 10 }} />
+                        <YAxis stroke="#fff" tickFormatter={formatNumber} tick={{ fontSize: 10 }} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', fontSize: '12px' }}
+                          formatter={formatNumber}
+                        />
+                        <Bar 
+                          dataKey="viewsPerDay" 
+                          fill={channel.color}
+                          name="Views/dag"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      };
+
+      const renderHistory = () => {
+        const sortedStats = [...stats].sort((a, b) => b.timestamp - a.timestamp);
+        const groupedByDate = {};
+        
+        sortedStats.forEach(stat => {
+          if (!groupedByDate[stat.date]) {
+            groupedByDate[stat.date] = [];
+          }
+          groupedByDate[stat.date].push(stat);
+        });
+
+        return (
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <History size={24} />
+              Historische Data
+            </h3>
+            
+            <div className="space-y-4">
+              {Object.entries(groupedByDate).map(([date, dateStats]) => (
+                <div key={date} className="bg-white/5 rounded-lg p-4">
+                  <div className="text-lg font-bold text-white mb-3">
+                    {new Date(date).toLocaleDateString('nl-NL', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {channels.map(channel => {
+                      const stat = dateStats.find(s => s.channelId === channel.id);
+                      if (!stat) return null;
+
+                      const channelStats = stats.filter(s => s.channelId === channel.id);
+                      const statIndex = channelStats.findIndex(s => s.id === stat.id);
+                      const prevStat = statIndex > 0 ? channelStats[statIndex - 1] : null;
+
+                      const viewsChange = prevStat ? stat.views - prevStat.views : 0;
+                      const subsChange = prevStat ? stat.subs - prevStat.subs : 0;
+
+                      return (
+                        <div key={channel.id} className="bg-white/10 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: channel.color }} />
+                            <span className="text-sm font-semibold text-white">{channel.name}</span>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-purple-200">Views</span>
+                              <div className="text-right">
+                                <div className="text-sm font-bold text-white">{formatNumber(stat.views)}</div>
+                                {viewsChange !== 0 && (
+                                  <div className={`text-xs flex items-center gap-1 ${viewsChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {viewsChange > 0 ? <ArrowUp size={10} /> : <ArrowDown size={10} />}
+                                    {formatNumber(Math.abs(viewsChange))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-purple-200">Subs</span>
+                              <div className="text-right">
+                                <div className="text-sm font-bold text-white">{formatNumber(stat.subs)}</div>
+                                {subsChange !== 0 && (
+                                  <div className={`text-xs flex items-center gap-1 ${subsChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {subsChange > 0 ? <ArrowUp size={10} /> : <ArrowDown size={10} />}
+                                    {formatNumber(Math.abs(subsChange))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {stats.length === 0 && (
+              <div className="text-center text-purple-200 py-8">
+                Nog geen historische data beschikbaar
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 flex items-center justify-center gap-3">
+                <Trophy className="text-yellow-400" size={40} />
+                YouTube Battle Tracker
+              </h1>
+              <p className="text-purple-200">Race naar monetizatie - 18M views!</p>
+            </div>
+
+            <div className="mb-6">
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg"
+              >
+                <Plus size={20} />
+                {showAddForm ? 'Annuleren' : 'Nieuwe Stats Toevoegen'}
+              </button>
+            </div>
+
+            {showAddForm && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 mb-8 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4">Stats Toevoegen</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-purple-200 mb-2 text-sm">Kanaal</label>
+                    <select
+                      value={newEntry.channelId}
+                      onChange={(e) => setNewEntry({ ...newEntry, channelId: e.target.value })}
+                      className="w-full bg-white/20 text-white border border-white/30 rounded-lg px-4 py-2"
+                    >
+                      {channels.map(ch => (
+                        <option key={ch.id} value={ch.id} className="bg-slate-800">{ch.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-purple-200 mb-2 text-sm">Subscribers</label>
+                    <input
+                      type="number"
+                      value={newEntry.subs}
+                      onChange={(e) => setNewEntry({ ...newEntry, subs: e.target.value })}
+                      className="w-full bg-white/20 text-white border border-white/30 rounded-lg px-4 py-2"
+                      placeholder="1000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-purple-200 mb-2 text-sm">Views</label>
+                    <input
+                      type="number"
+                      value={newEntry.views}
+                      onChange={(e) => setNewEntry({ ...newEntry, views: e.target.value })}
+                      className="w-full bg-white/20 text-white border border-white/30 rounded-lg px-4 py-2"
+                      placeholder="50000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-purple-200 mb-2 text-sm">Datum</label>
+                    <input
+                      type="date"
+                      value={newEntry.date}
+                      onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
+                      className="w-full bg-white/20 text-white border border-white/30 rounded-lg px-4 py-2"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={addEntry}
+                  className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all"
+                >
+                  Opslaan
+                </button>
+              </div>
+            )}
+
+            <div className="flex gap-2 mb-8 overflow-x-auto">
+              <button
+                onClick={() => setActiveTab('overview')}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                  activeTab === 'overview'
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                    : 'bg-white/10 text-purple-200 hover:bg-white/20'
+                }`}
+              >
+                📊 Overzicht
+              </button>
+              <button
+                onClick={() => setActiveTab('charts')}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                  activeTab === 'charts'
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                    : 'bg-white/10 text-purple-200 hover:bg-white/20'
+                }`}
+              >
+                📈 Grafieken
+              </button>
+              <button
+                onClick={() => setActiveTab('history')}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                  activeTab === 'history'
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                    : 'bg-white/10 text-purple-200 hover:bg-white/20'
+                }`}
+              >
+                📜 Historiek
+              </button>
+            </div>
+
+            {activeTab === 'overview' && renderOverview()}
+            {activeTab === 'charts' && renderCharts()}
+            {activeTab === 'history' && renderHistory()}
+
+            {stats.length === 0 && (
+              <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-6 mt-8">
+                <p className="text-yellow-200 text-center">
+                  Geen data gevonden. Klik op "Nieuwe Stats Toevoegen" om te beginnen!
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<YouTubeBattleTracker />);
+  </script>
+</body>
+</html>

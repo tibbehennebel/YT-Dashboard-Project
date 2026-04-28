@@ -4,73 +4,73 @@
     "id": "channel1",
     "name": "Flixaro",
     "owner": "tibbe",
-    "color": "#EF4444"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel2",
     "name": "FlixaroCentral",
     "owner": "tibbe",
-    "color": "#F59E0B"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel3",
     "name": "FlixaroClips",
     "owner": "tibbe",
-    "color": "#10B981"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel4",
     "name": "FlixaroPlus",
     "owner": "tibbe",
-    "color": "#06B6D4"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel5",
     "name": "psyminds",
     "owner": "tibbe",
-    "color": "#EC4899"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel6",
     "name": "FlixaroJP",
     "owner": "tibbe",
-    "color": "#F97316"
+    "color": "#C0C0C0"
   },
   {
     "id": "channel7",
     "name": "Molly Movie",
     "owner": "vincent",
-    "color": "#3B82F6"
+    "color": "#FFD700"
   },
   {
     "id": "channel8",
     "name": "Narrator Clips",
     "owner": "vincent",
-    "color": "#8B5CF6"
+    "color": "#FFD700"
   },
   {
     "id": "channel9",
     "name": "Plot Drop",
     "owner": "vincent",
-    "color": "#14B8A6"
+    "color": "#FFD700"
   },
   {
     "id": "channel10",
     "name": "Scene Fin",
     "owner": "vincent",
-    "color": "#F43F5E"
+    "color": "#FFD700"
   },
   {
     "id": "channel11",
     "name": "Monte Scene",
     "owner": "vincent",
-    "color": "#A855F7"
+    "color": "#FFD700"
   },
   {
     "id": "channel12",
     "name": "Ora Movie",
     "owner": "vincent",
-    "color": "#22C55E"
+    "color": "#FFD700"
   }
 ],
   "stats": [

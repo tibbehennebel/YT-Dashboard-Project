@@ -1,96 +1,79 @@
 {
   "channels": [
-    {
-      "id": "channel1",
-      "name": "K1 - Monte",
-      "owner": "vincent",
-      "color": "#3B82F6"
-    },
-    {
-      "id": "channel2",
-      "name": "K2 - Spyff",
-      "owner": "vincent",
-      "color": "#8B5CF6"
-    },
-    {
-      "id": "channel3",
-      "name": "Kanaal Tibbe",
-      "owner": "tibbe",
-      "color": "#EF4444"
-    }
-  ],
+  {
+    "id": "channel1",
+    "name": "Flixaro",
+    "owner": "tibbe",
+    "color": "#EF4444"
+  },
+  {
+    "id": "channel2",
+    "name": "FlixaroCentral",
+    "owner": "tibbe",
+    "color": "#F59E0B"
+  },
+  {
+    "id": "channel3",
+    "name": "FlixaroClips",
+    "owner": "tibbe",
+    "color": "#10B981"
+  },
+  {
+    "id": "channel4",
+    "name": "FlixaroPlus",
+    "owner": "tibbe",
+    "color": "#06B6D4"
+  },
+  {
+    "id": "channel5",
+    "name": "psyminds",
+    "owner": "tibbe",
+    "color": "#EC4899"
+  },
+  {
+    "id": "channel6",
+    "name": "FlixaroJP",
+    "owner": "tibbe",
+    "color": "#F97316"
+  },
+  {
+    "id": "channel7",
+    "name": "Molly Movie",
+    "owner": "vincent",
+    "color": "#3B82F6"
+  },
+  {
+    "id": "channel8",
+    "name": "Narrator Clips",
+    "owner": "vincent",
+    "color": "#8B5CF6"
+  },
+  {
+    "id": "channel9",
+    "name": "Plot Drop",
+    "owner": "vincent",
+    "color": "#14B8A6"
+  },
+  {
+    "id": "channel10",
+    "name": "Scene Fin",
+    "owner": "vincent",
+    "color": "#F43F5E"
+  },
+  {
+    "id": "channel11",
+    "name": "Monte Scene",
+    "owner": "vincent",
+    "color": "#A855F7"
+  },
+  {
+    "id": "channel12",
+    "name": "Ora Movie",
+    "owner": "vincent",
+    "color": "#22C55E"
+  }
+],
   "stats": [
-    {
-      "id": 1771079998596,
-      "channelId": "channel1",
-      "subs": 394,
-      "views": 1100000,
-      "date": "2026-02-05",
-      "timestamp": 1770249600000
-    },
-    {
-      "id": 1771080131787,
-      "channelId": "channel2",
-      "subs": 460,
-      "views": 422100,
-      "date": "2026-02-05",
-      "timestamp": 1770249600000
-    },
-    {
-      "id": 1771080146360,
-      "channelId": "channel3",
-      "subs": 1765,
-      "views": 34000,
-      "date": "2026-02-05",
-      "timestamp": 1770249600000
-    },
-    {
-      "id": 1771080755820,
-      "channelId": "channel1",
-      "subs": 416,
-      "views": 1160000,
-      "date": "2026-02-08",
-      "timestamp": 1770508800000
-    },
-    {
-      "id": 1771080772427,
-      "channelId": "channel2",
-      "subs": 526,
-      "views": 593000,
-      "date": "2026-02-08",
-      "timestamp": 1770508800000
-    },
-    {
-      "id": 1771080789762,
-      "channelId": "channel3",
-      "subs": 2789,
-      "views": 75000,
-      "date": "2026-02-08",
-      "timestamp": 1770508800000
-    },
-    {
-      "id": 1771080837976,
-      "channelId": "channel3",
-      "subs": 11738,
-      "views": 308697,
-      "date": "2026-02-14",
-      "timestamp": 1771027200000
-    },
-    {
-      "id": 1771080884002,
-      "channelId": "channel2",
-      "subs": 1629,
-      "views": 1544187,
-      "date": "2026-02-14",
-      "timestamp": 1771027200000
-    },
-    {
-      "id": 1771080918127,
-      "channelId": "channel1",
-      "subs": 1075,
-      "views": 1850076,
-      "date": "2026-02-14",
-      "timestamp": 1771027200000
-    }
+    
   ]
 }

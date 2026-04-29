@@ -10,6 +10,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.4), 0 0 40px rgba(255,215,0,0.15); }
+      50% { box-shadow: 0 0 45px rgba(255,215,0,0.9), 0 0 80px rgba(255,215,0,0.35); }
+    }
+    @keyframes pulse-silver {
+      0%, 100% { box-shadow: 0 0 20px rgba(192,192,192,0.4), 0 0 40px rgba(192,192,192,0.15); }
+      50% { box-shadow: 0 0 45px rgba(192,192,192,0.9), 0 0 80px rgba(192,192,192,0.35); }
+    }
+    .leader-gold { animation: pulse-gold 2s ease-in-out infinite; }
+    .leader-silver { animation: pulse-silver 2s ease-in-out infinite; }
   </style>
 </head>
 <body>
@@ -18,6 +28,18 @@
     const GITHUB_DATA_URL = './data.json';
     const { useState, useEffect } = React;
 
+    const formatNumber = (num) => {
+      if (num === undefined || num === null) return '0';
+      if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    };
+
+    const formatExact = (num) => {
+      if (num === undefined || num === null) return '0';
+      return Math.round(num).toLocaleString('nl-NL');
+    };
+
     const Trophy = ({ size = 24, className = "" }) => (
       <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/>
@@ -25,7 +47,6 @@
         <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
       </svg>
     );
-
     const Plus = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>;
     const Download = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>;
     const RefreshCw = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>;
@@ -34,6 +55,82 @@
     const History = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>;
     const ArrowUp = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>;
     const ArrowDown = ({ size = 24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>;
+
+    const LineChart = ({ data, series, height = 220, showZero = false }) => {
+      if (!data || data.length < 2) return (
+        <div className="text-purple-300 text-center py-6 text-sm italic">Minimaal 2 datapunten nodig voor lijn grafiek</div>
+      );
+      const allValues = series.flatMap(s => data.map(d => d[s.dataKey] ?? 0));
+      if (showZero) allValues.push(0);
+      const maxVal = Math.max(...allValues);
+      const minVal = Math.min(...allValues);
+      const range = maxVal === minVal ? 1 : maxVal - minVal;
+      const vbW = 600, padL = 58, padR = 15, padT = 15, padB = 35;
+      const cW = vbW - padL - padR;
+      const cH = height - padT - padB;
+      const n = data.length;
+      const gx = i => padL + (n <= 1 ? cW / 2 : (i / (n - 1)) * cW);
+      const gy = v => padT + cH - ((v - minVal) / range) * cH;
+      const showEvery = Math.max(1, Math.ceil(n / 7));
+      return (
+        <svg viewBox={`0 0 ${vbW} ${height}`} className="w-full" style={{overflow:'visible'}}>
+          {[0,0.25,0.5,0.75,1].map((t, i) => {
+            const y = padT + t * cH;
+            const val = maxVal - t * range;
+            return (
+              <g key={i}>
+                <line x1={padL} y1={y} x2={vbW - padR} y2={y} stroke="rgba(255,255,255,0.08)" strokeDasharray="3,3" />
+                <text x={padL - 5} y={y + 4} textAnchor="end" fill="rgba(200,180,255,0.65)" fontSize="9">{formatNumber(Math.round(val))}</text>
+              </g>
+            );
+          })}
+          {showZero && minVal < 0 && maxVal > 0 && (
+            <line x1={padL} y1={gy(0)} x2={vbW - padR} y2={gy(0)} stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
+          )}
+          {data.map((d, i) => (
+            (i % showEvery === 0 || i === n - 1) ? (
+              <text key={i} x={gx(i)} y={height - 4} textAnchor="middle" fill="rgba(200,180,255,0.65)" fontSize="9">{d.date}</text>
+            ) : null
+          ))}
+          {series.map(s => {
+            const pts = data.map((d, i) => `${gx(i).toFixed(1)},${gy(d[s.dataKey] ?? 0).toFixed(1)}`).join(' ');
+            return (
+              <g key={s.id}>
+                <polyline points={pts} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+                {data.map((d, i) => (
+                  <circle key={i} cx={gx(i)} cy={gy(d[s.dataKey] ?? 0)} r="4" fill={s.color} stroke="rgba(0,0,0,0.4)" strokeWidth="1">
+                    <title>{s.label}: {formatNumber(d[s.dataKey] ?? 0)}</title>
+                  </circle>
+                ))}
+              </g>
+            );
+          })}
+        </svg>
+      );
+    };
+
+    const BattleBar = ({ goudVal, zilverVal, label }) => {
+      const total = goudVal + zilverVal;
+      const goudPct = total > 0 ? (goudVal / total) * 100 : 50;
+      const zilverPct = 100 - goudPct;
+      return (
+        <div className="mb-5">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-yellow-400 font-bold">{formatNumber(goudVal)}</span>
+            <span className="text-white text-xs font-semibold uppercase tracking-wider">{label}</span>
+            <span className="text-slate-300 font-bold">{formatNumber(zilverVal)}</span>
+          </div>
+          <div className="flex h-9 rounded-full overflow-hidden border border-white/10">
+            <div style={{ width: `${goudPct}%`, background: 'linear-gradient(90deg, #b8960c, #FFD700)' }} className="transition-all duration-700 flex items-center justify-center text-xs font-bold text-yellow-900">
+              {goudPct > 12 ? `${goudPct.toFixed(1)}%` : ''}
+            </div>
+            <div style={{ width: `${zilverPct}%`, background: 'linear-gradient(90deg, #aaa, #e8e8e8)' }} className="transition-all duration-700 flex items-center justify-center text-xs font-bold text-slate-700">
+              {zilverPct > 12 ? `${zilverPct.toFixed(1)}%` : ''}
+            </div>
+          </div>
+        </div>
+      );
+    };
 
     function YouTubeBattleTracker() {
       const [channels, setChannels] = useState([]);
@@ -85,12 +182,6 @@
       const getLatestStats = (channelId) => {
         const channelStats = stats.filter(s => s.channelId === channelId);
         return channelStats.length === 0 ? { subs: 0, views: 0 } : channelStats[channelStats.length - 1];
-      };
-
-      const formatNumber = (num) => {
-        if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
-        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-        return num.toString();
       };
 
       const getGrowth = (channelId) => {
@@ -148,9 +239,32 @@
         const viewsLeader = goudStats.views >= zilverStats.views ? 'goud' : 'zilver';
         const subsLeader = goudStats.subs >= zilverStats.subs ? 'goud' : 'zilver';
 
-        const TeamCard = ({ teamChannels, isGoud }) => (
-          <div className={`bg-gradient-to-br ${isGoud ? 'from-yellow-600/20 to-amber-600/20 border-yellow-400/30' : 'from-slate-600/20 to-gray-500/20 border-slate-400/30'} rounded-lg p-4 border`}>
-            <h4 className={`text-xl font-bold mb-4 ${isGoud ? 'text-yellow-400' : 'text-slate-300'}`}>
+        const dates = [...new Set(stats.map(s => s.date))].sort();
+        const battleTimeData = dates.map(date => {
+          const goudViews = goudChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.views || 0);
+          }, 0);
+          const zilverViews = zilverChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.views || 0);
+          }, 0);
+          return {
+            date: new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }),
+            goudViews,
+            zilverViews,
+            viewsDiff: goudViews - zilverViews,
+          };
+        });
+
+        const TeamCard = ({ teamChannels, isGoud, isLeader }) => (
+          <div className={`relative bg-gradient-to-br ${isGoud ? 'from-yellow-600/20 to-amber-600/20' : 'from-slate-600/20 to-gray-500/20'} rounded-xl p-5 border-2 transition-all duration-300 ${isLeader ? (isGoud ? 'border-yellow-400 leader-gold' : 'border-slate-300 leader-silver') : (isGoud ? 'border-yellow-400/30' : 'border-slate-400/30')}`}>
+            {isLeader && (
+              <div className={`absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-lg z-10 ${isGoud ? 'bg-yellow-400 text-yellow-900' : 'bg-slate-200 text-slate-800'}`}>
+                👑 LEIDT IN VIEWS
+              </div>
+            )}
+            <h4 className={`text-xl font-bold mb-4 mt-2 ${isGoud ? 'text-yellow-400' : 'text-slate-300'}`}>
               {isGoud ? '🥇 Goud' : '🥈 Zilver'}
             </h4>
             <div className="space-y-2 mb-4">
@@ -184,27 +298,65 @@
         return (
           <div className="space-y-6">
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
                 <Trophy className="text-yellow-400" />
                 Battle: Goud vs Zilver — 6v6
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <TeamCard teamChannels={goudChannels} isGoud={true} />
-                <TeamCard teamChannels={zilverChannels} isGoud={false} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-2">
+                <TeamCard teamChannels={goudChannels} isGoud={true} isLeader={viewsLeader === 'goud'} />
+                <TeamCard teamChannels={zilverChannels} isGoud={false} isLeader={viewsLeader === 'zilver'} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/5 rounded-lg p-3">
+
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="bg-white/5 rounded-lg p-4">
                   <div className="text-purple-200 text-xs mb-1">Views Leader</div>
                   <div className={`text-lg font-bold ${viewsLeader === 'goud' ? 'text-yellow-400' : 'text-slate-300'}`}>{viewsLeader === 'goud' ? '🥇 Goud' : '🥈 Zilver'}</div>
-                  <div className="text-sm text-purple-200">Voorsprong: {formatNumber(Math.abs(goudStats.views - zilverStats.views))}</div>
+                  <div className="text-sm text-purple-200 mt-1">Voorsprong: <span className="text-white font-semibold">{formatExact(Math.abs(goudStats.views - zilverStats.views))}</span></div>
                 </div>
-                <div className="bg-white/5 rounded-lg p-3">
+                <div className="bg-white/5 rounded-lg p-4">
                   <div className="text-purple-200 text-xs mb-1">Subs Leader</div>
                   <div className={`text-lg font-bold ${subsLeader === 'goud' ? 'text-yellow-400' : 'text-slate-300'}`}>{subsLeader === 'goud' ? '🥇 Goud' : '🥈 Zilver'}</div>
-                  <div className="text-sm text-purple-200">Voorsprong: {formatNumber(Math.abs(goudStats.subs - zilverStats.subs))}</div>
+                  <div className="text-sm text-purple-200 mt-1">Voorsprong: <span className="text-white font-semibold">{formatExact(Math.abs(goudStats.subs - zilverStats.subs))}</span></div>
                 </div>
               </div>
+
+              <div className="pt-4 border-t border-white/10 space-y-2">
+                <h4 className="text-lg font-bold text-white mb-4">⚡ Huidige Verdeling</h4>
+                <BattleBar goudVal={goudStats.views} zilverVal={zilverStats.views} label="Views" />
+                <BattleBar goudVal={goudStats.subs} zilverVal={zilverStats.subs} label="Subscribers" />
+              </div>
+
+              {battleTimeData.length >= 2 && (
+                <div className="mt-8 pt-6 border-t border-white/10 space-y-8">
+                  <div>
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">📈 Team Views Over Tijd</h4>
+                    <div className="flex gap-6 mb-3">
+                      <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-yellow-400" /><span className="text-sm text-purple-200">Goud</span></div>
+                      <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300" /><span className="text-sm text-purple-200">Zilver</span></div>
+                    </div>
+                    <LineChart
+                      data={battleTimeData}
+                      series={[
+                        { id: 'goud', dataKey: 'goudViews', color: '#FFD700', label: 'Goud' },
+                        { id: 'zilver', dataKey: 'zilverViews', color: '#C0C0C0', label: 'Zilver' },
+                      ]}
+                    />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-white mb-1 flex items-center gap-2">📊 Voorsprong Over Tijd (Views)</h4>
+                    <p className="text-purple-300 text-xs mb-3">Positief = Goud leidt · Negatief = Zilver leidt · Witte lijn = gelijk</p>
+                    <LineChart
+                      data={battleTimeData}
+                      series={[
+                        { id: 'diff', dataKey: 'viewsDiff', color: goudStats.views >= zilverStats.views ? '#FFD700' : '#C0C0C0', label: 'Voorsprong Views' },
+                      ]}
+                      showZero={true}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {channels.map(channel => {
                 const latest = getLatestStats(channel.id);
@@ -258,25 +410,143 @@
           return entry;
         });
 
+        const goudChannels = channels.filter(ch => ch.team === 'goud');
+        const zilverChannels = channels.filter(ch => ch.team === 'zilver');
+
+        const teamData = dates.map(date => {
+          const goudViews = goudChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.views || 0);
+          }, 0);
+          const zilverViews = zilverChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.views || 0);
+          }, 0);
+          const goudSubs = goudChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.subs || 0);
+          }, 0);
+          const zilverSubs = zilverChannels.reduce((acc, ch) => {
+            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            return acc + (stat?.subs || 0);
+          }, 0);
+          return {
+            date: new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }),
+            goudViews, zilverViews, goudSubs, zilverSubs,
+            viewsDiff: goudViews - zilverViews,
+            subsDiff: goudSubs - zilverSubs,
+          };
+        });
+
+        const Legend = ({ items }) => (
+          <div className="flex gap-4 flex-wrap mb-4">
+            {items.map(item => (
+              <div key={item.id} className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-sm text-purple-200">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        );
+
+        if (chartData.length === 0) return (
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <p className="text-purple-200 text-center">Nog geen data voor grafieken.</p>
+          </div>
+        );
+
         return (
           <div className="space-y-6">
-            {chartData.length > 0 && (
-              <>
-                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                  <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><Eye size={24} />Views Progressie</h3>
-                  <div className="mb-4 flex gap-4 flex-wrap">
-                    {channels.map(ch => <div key={ch.id} className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: ch.color }} /><span className="text-sm text-purple-200">{ch.name}</span></div>)}
-                  </div>
-                  <SimpleChart data={chartData} channels={channels} dataKey="views" />
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Eye size={22} />Views — Staafgrafiek per Kanaal</h3>
+              <Legend items={channels.map(ch => ({ id: ch.id, color: ch.color, name: ch.name }))} />
+              <SimpleChart data={chartData} channels={channels} dataKey="views" />
+            </div>
+
+            {chartData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">📈 Views — Lijn per Kanaal</h3>
+                <Legend items={channels.map(ch => ({ id: ch.id, color: ch.color, name: ch.name }))} />
+                <LineChart
+                  data={chartData}
+                  series={channels.map(ch => ({ id: ch.id, dataKey: ch.id + '_views', color: ch.color, label: ch.name }))}
+                />
+              </div>
+            )}
+
+            {teamData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">⚔️ Team Views — Goud vs Zilver</h3>
+                <div className="flex gap-6 mb-4">
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-yellow-400" /><span className="text-sm text-purple-200">Goud</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300" /><span className="text-sm text-purple-200">Zilver</span></div>
                 </div>
-                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                  <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2"><Users size={24} />Subscribers Progressie</h3>
-                  <div className="mb-4 flex gap-4 flex-wrap">
-                    {channels.map(ch => <div key={ch.id} className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: ch.color }} /><span className="text-sm text-purple-200">{ch.name}</span></div>)}
-                  </div>
-                  <SimpleChart data={chartData} channels={channels} dataKey="subs" />
+                <LineChart
+                  data={teamData}
+                  series={[
+                    { id: 'goud', dataKey: 'goudViews', color: '#FFD700', label: 'Goud Views' },
+                    { id: 'zilver', dataKey: 'zilverViews', color: '#C0C0C0', label: 'Zilver Views' },
+                  ]}
+                />
+              </div>
+            )}
+
+            {teamData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">📊 Views Voorsprong Over Tijd</h3>
+                <p className="text-purple-300 text-xs mb-4">Positief = Goud leidt · Negatief = Zilver leidt · Witte lijn = gelijk</p>
+                <LineChart
+                  data={teamData}
+                  series={[{ id: 'diff', dataKey: 'viewsDiff', color: '#a78bfa', label: 'Voorsprong Views' }]}
+                  showZero={true}
+                />
+              </div>
+            )}
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Users size={22} />Subscribers — Staafgrafiek per Kanaal</h3>
+              <Legend items={channels.map(ch => ({ id: ch.id, color: ch.color, name: ch.name }))} />
+              <SimpleChart data={chartData} channels={channels} dataKey="subs" />
+            </div>
+
+            {chartData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">📈 Subs — Lijn per Kanaal</h3>
+                <Legend items={channels.map(ch => ({ id: ch.id, color: ch.color, name: ch.name }))} />
+                <LineChart
+                  data={chartData}
+                  series={channels.map(ch => ({ id: ch.id, dataKey: ch.id + '_subs', color: ch.color, label: ch.name }))}
+                />
+              </div>
+            )}
+
+            {teamData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">⚔️ Team Subs — Goud vs Zilver</h3>
+                <div className="flex gap-6 mb-4">
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-yellow-400" /><span className="text-sm text-purple-200">Goud</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300" /><span className="text-sm text-purple-200">Zilver</span></div>
                 </div>
-              </>
+                <LineChart
+                  data={teamData}
+                  series={[
+                    { id: 'goud', dataKey: 'goudSubs', color: '#FFD700', label: 'Goud Subs' },
+                    { id: 'zilver', dataKey: 'zilverSubs', color: '#C0C0C0', label: 'Zilver Subs' },
+                  ]}
+                />
+              </div>
+            )}
+
+            {teamData.length >= 2 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">📊 Subs Voorsprong Over Tijd</h3>
+                <p className="text-purple-300 text-xs mb-4">Positief = Goud leidt · Negatief = Zilver leidt</p>
+                <LineChart
+                  data={teamData}
+                  series={[{ id: 'subdiff', dataKey: 'subsDiff', color: '#34d399', label: 'Voorsprong Subs' }]}
+                  showZero={true}
+                />
+              </div>
             )}
           </div>
         );

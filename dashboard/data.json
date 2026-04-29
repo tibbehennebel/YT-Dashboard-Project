@@ -86,6 +86,197 @@
     }
   ],
   "stats": [
-    
+    {
+      "id": 1777415586373,
+      "channelId": "channel7",
+      "subs": 4,
+      "views": 13372,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415609424,
+      "channelId": "channel8",
+      "subs": 1,
+      "views": 1641,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415624317,
+      "channelId": "channel9",
+      "subs": 3,
+      "views": 2092,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415646229,
+      "channelId": "channel10",
+      "subs": 7,
+      "views": 646,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415664662,
+      "channelId": "channel11",
+      "subs": 3,
+      "views": 498,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415707930,
+      "channelId": "channel12",
+      "subs": 8,
+      "views": 1813,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415809851,
+      "channelId": "channel1",
+      "subs": 4,
+      "views": 1661,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415847126,
+      "channelId": "channel2",
+      "subs": 29,
+      "views": 26035,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415866893,
+      "channelId": "channel3",
+      "subs": 1,
+      "views": 2259,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415887156,
+      "channelId": "channel4",
+      "subs": 4,
+      "views": 4805,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415913031,
+      "channelId": "channel5",
+      "subs": 2854,
+      "views": 29779,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777415991131,
+      "channelId": "channel6",
+      "subs": 66,
+      "views": 129567,
+      "date": "2026-04-28",
+      "timestamp": 1777334400000
+    },
+    {
+      "id": 1777462301352,
+      "channelId": "channel1",
+      "subs": 5,
+      "views": 2919,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462330922,
+      "channelId": "channel2",
+      "subs": 31,
+      "views": 26593,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462353105,
+      "channelId": "channel3",
+      "subs": 1,
+      "views": 2618,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462390515,
+      "channelId": "channel4",
+      "subs": 6,
+      "views": 5019,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462413258,
+      "channelId": "channel5",
+      "subs": 2854,
+      "views": 30583,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462442248,
+      "channelId": "channel6",
+      "subs": 66,
+      "views": 131971,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462490343,
+      "channelId": "channel7",
+      "subs": 5,
+      "views": 19994,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462540106,
+      "channelId": "channel8",
+      "subs": 2,
+      "views": 5246,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462575277,
+      "channelId": "channel9",
+      "subs": 8,
+      "views": 10566,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462610513,
+      "channelId": "channel10",
+      "subs": 6,
+      "views": 2165,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462641973,
+      "channelId": "channel11",
+      "subs": 3,
+      "views": 2570,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    },
+    {
+      "id": 1777462679073,
+      "channelId": "channel12",
+      "subs": 8,
+      "views": 2642,
+      "date": "2026-04-29",
+      "timestamp": 1777420800000
+    }
   ]
 }

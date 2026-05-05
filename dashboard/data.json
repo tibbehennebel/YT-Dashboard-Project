@@ -277,6 +277,54 @@
       "views": 2642,
       "date": "2026-04-29",
       "timestamp": 1777420800000
+    },
+    {
+      "id": 1777995781144,
+      "channelId": "channel7",
+      "subs": 11,
+      "views": 25308,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
+    },
+    {
+      "id": 1777995811832,
+      "channelId": "channel8",
+      "subs": 105,
+      "views": 238085,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
+    },
+    {
+      "id": 1777995847053,
+      "channelId": "channel9",
+      "subs": 22,
+      "views": 28335,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
+    },
+    {
+      "id": 1777995876528,
+      "channelId": "channel10",
+      "subs": 39,
+      "views": 24081,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
+    },
+    {
+      "id": 1777995904467,
+      "channelId": "channel11",
+      "subs": 139,
+      "views": 75658,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
+    },
+    {
+      "id": 1777995926772,
+      "channelId": "channel12",
+      "subs": 35,
+      "views": 34419,
+      "date": "2026-05-05",
+      "timestamp": 1777939200000
     }
   ]
 }

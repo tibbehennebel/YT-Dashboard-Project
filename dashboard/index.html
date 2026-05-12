@@ -202,6 +202,13 @@
         return { subsPerDay: (latest.subs - first.subs) / daysDiff, viewsPerDay: (latest.views - first.views) / daysDiff };
       };
 
+      const getStatOnOrBefore = (channelId, date) => {
+        const channelStats = stats
+          .filter(s => s.channelId === channelId && s.date <= date)
+          .sort((a, b) => a.date.localeCompare(b.date));
+        return channelStats.length > 0 ? channelStats[channelStats.length - 1] : null;
+      };
+
       if (loading) return <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center"><div className="text-white text-xl">Laden...</div></div>;
 
       const SimpleChart = ({ data, channels, dataKey }) => {
@@ -242,11 +249,11 @@
         const dates = [...new Set(stats.map(s => s.date))].sort();
         const battleTimeData = dates.map(date => {
           const goudViews = goudChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.views || 0);
           }, 0);
           const zilverViews = zilverChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.views || 0);
           }, 0);
           return {
@@ -300,7 +307,7 @@
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
               <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
                 <Trophy className="text-yellow-400" />
-                Battle: Goud vs Zilver — 6v6
+                Battle: Goud vs Zilver — {goudChannels.length}v{zilverChannels.length}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-2">
                 <TeamCard teamChannels={goudChannels} isGoud={true} isLeader={viewsLeader === 'goud'} />
@@ -403,7 +410,7 @@
         const chartData = dates.map(date => {
           const entry = { date: new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) };
           channels.forEach(channel => {
-            const stat = stats.find(s => s.date === date && s.channelId === channel.id);
+            const stat = getStatOnOrBefore(channel.id, date);
             entry[channel.id + '_views'] = stat?.views || 0;
             entry[channel.id + '_subs'] = stat?.subs || 0;
           });
@@ -415,19 +422,19 @@
 
         const teamData = dates.map(date => {
           const goudViews = goudChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.views || 0);
           }, 0);
           const zilverViews = zilverChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.views || 0);
           }, 0);
           const goudSubs = goudChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.subs || 0);
           }, 0);
           const zilverSubs = zilverChannels.reduce((acc, ch) => {
-            const stat = stats.find(s => s.date === date && s.channelId === ch.id);
+            const stat = getStatOnOrBefore(ch.id, date);
             return acc + (stat?.subs || 0);
           }, 0);
           return {

@@ -583,6 +583,38 @@
       "views": 3299,
       "date": "2026-05-25",
       "timestamp": 1779667200000
+    },
+    {
+      "id": 1779806186498,
+      "channelId": "channel1",
+      "subs": 7863,
+      "views": 3057699,
+      "date": "2026-05-26",
+      "timestamp": 1779753600000
+    },
+    {
+      "id": 1779806202967,
+      "channelId": "channel2",
+      "subs": 22,
+      "views": 30981,
+      "date": "2026-05-26",
+      "timestamp": 1779753600000
+    },
+    {
+      "id": 1779806226726,
+      "channelId": "channel3",
+      "subs": 392,
+      "views": 983601,
+      "date": "2026-05-26",
+      "timestamp": 1779753600000
+    },
+    {
+      "id": 1779806288273,
+      "channelId": "channel4",
+      "subs": 7,
+      "views": 3918,
+      "date": "2026-05-26",
+      "timestamp": 1779753600000
     }
   ]
 }

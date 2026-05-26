@@ -140,7 +140,7 @@
       const [activeTab, setActiveTab] = useState('overview');
       const [hasLocalChanges, setHasLocalChanges] = useState(false);
       const [newEntry, setNewEntry] = useState({ channelId: 'channel1', subs: '', views: '', date: new Date().toISOString().split('T')[0] });
-      const MONETIZATION_TARGET = 18000000;
+      const MONETIZATION_TARGET = 16000000;
 
       useEffect(() => { loadDataFromGitHub(); }, []);
 
@@ -666,7 +666,7 @@
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 flex items-center justify-center gap-3">
                 <Trophy className="text-yellow-400" size={40} />YouTube Battle Tracker
               </h1>
-              <p className="text-purple-200">Race naar monetizatie - 18M views!</p>
+              <p className="text-purple-200">Race naar monetizatie - 16M views!</p>
             </div>
             {hasLocalChanges && (
               <div className="bg-yellow-500/20 border-2 border-yellow-500 rounded-xl p-4 mb-6">

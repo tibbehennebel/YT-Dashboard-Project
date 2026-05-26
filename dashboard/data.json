@@ -29,13 +29,6 @@
       "color": "#C0C0C0"
     },
     {
-      "id": "channel7",
-      "name": "Molly Movie",
-      "owner": "vincent",
-      "team": "goud",
-      "color": "#FFD700"
-    },
-    {
       "id": "channel8",
       "name": "Narrator Clips",
       "owner": "vincent",
@@ -62,24 +55,9 @@
       "owner": "vincent",
       "team": "goud",
       "color": "#FFD700"
-    },
-    {
-      "id": "channel12",
-      "name": "Ora Movie",
-      "owner": "vincent",
-      "team": "goud",
-      "color": "#FFD700"
     }
   ],
   "stats": [
-    {
-      "id": 1777462490343,
-      "channelId": "channel7",
-      "subs": 5,
-      "views": 19994,
-      "date": "2026-04-29",
-      "timestamp": 1777420800000
-    },
     {
       "id": 1777462540106,
       "channelId": "channel8",
@@ -113,22 +91,6 @@
       "timestamp": 1777420800000
     },
     {
-      "id": 1777462679073,
-      "channelId": "channel12",
-      "subs": 8,
-      "views": 2642,
-      "date": "2026-04-29",
-      "timestamp": 1777420800000
-    },
-    {
-      "id": 1777995781144,
-      "channelId": "channel7",
-      "subs": 11,
-      "views": 25308,
-      "date": "2026-05-05",
-      "timestamp": 1777939200000
-    },
-    {
       "id": 1777995811832,
       "channelId": "channel8",
       "subs": 105,
@@ -157,14 +119,6 @@
       "channelId": "channel11",
       "subs": 139,
       "views": 75658,
-      "date": "2026-05-05",
-      "timestamp": 1777939200000
-    },
-    {
-      "id": 1777995926772,
-      "channelId": "channel12",
-      "subs": 35,
-      "views": 34419,
       "date": "2026-05-05",
       "timestamp": 1777939200000
     },
@@ -201,14 +155,6 @@
       "timestamp": 1778544000000
     },
     {
-      "id": 1778588391345,
-      "channelId": "channel7",
-      "subs": 11,
-      "views": 27036,
-      "date": "2026-05-12",
-      "timestamp": 1778544000000
-    },
-    {
       "id": 1778588428616,
       "channelId": "channel8",
       "subs": 300,
@@ -237,14 +183,6 @@
       "channelId": "channel11",
       "subs": 306,
       "views": 169224,
-      "date": "2026-05-12",
-      "timestamp": 1778544000000
-    },
-    {
-      "id": 1778588508069,
-      "channelId": "channel12",
-      "subs": 94,
-      "views": 77942,
       "date": "2026-05-12",
       "timestamp": 1778544000000
     },
@@ -281,14 +219,6 @@
       "timestamp": 1778803200000
     },
     {
-      "id": 1778858704961,
-      "channelId": "channel7",
-      "subs": 33,
-      "views": 62730,
-      "date": "2026-05-15",
-      "timestamp": 1778803200000
-    },
-    {
       "id": 1778858736956,
       "channelId": "channel8",
       "subs": 318,
@@ -317,14 +247,6 @@
       "channelId": "channel11",
       "subs": 465,
       "views": 295928,
-      "date": "2026-05-15",
-      "timestamp": 1778803200000
-    },
-    {
-      "id": 1778858842472,
-      "channelId": "channel12",
-      "subs": 101,
-      "views": 81955,
       "date": "2026-05-15",
       "timestamp": 1778803200000
     },
@@ -361,14 +283,6 @@
       "timestamp": 1779062400000
     },
     {
-      "id": 1779111715020,
-      "channelId": "channel7",
-      "subs": 40,
-      "views": 68453,
-      "date": "2026-05-18",
-      "timestamp": 1779062400000
-    },
-    {
       "id": 1779111745651,
       "channelId": "channel8",
       "subs": 371,
@@ -401,14 +315,6 @@
       "timestamp": 1779062400000
     },
     {
-      "id": 1779111845140,
-      "channelId": "channel12",
-      "subs": 120,
-      "views": 85661,
-      "date": "2026-05-18",
-      "timestamp": 1779062400000
-    },
-    {
       "id": 1779366561535,
       "channelId": "channel10",
       "subs": 136,
@@ -437,22 +343,6 @@
       "channelId": "channel8",
       "subs": 374,
       "views": 725123,
-      "date": "2026-05-21",
-      "timestamp": 1779321600000
-    },
-    {
-      "id": 1779366649399,
-      "channelId": "channel7",
-      "subs": 47,
-      "views": 71568,
-      "date": "2026-05-21",
-      "timestamp": 1779321600000
-    },
-    {
-      "id": 1779366663973,
-      "channelId": "channel12",
-      "subs": 129,
-      "views": 87296,
       "date": "2026-05-21",
       "timestamp": 1779321600000
     },

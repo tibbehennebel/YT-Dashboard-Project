@@ -55,6 +55,20 @@
       "owner": "vincent",
       "team": "goud",
       "color": "#FFD700"
+    },
+    {
+      "id": "channel12",
+      "name": "Molly Movie",
+      "owner": "vincent",
+      "team": "goud",
+      "color": "#FFD700"
+    },
+    {
+      "id": "channel13",
+      "name": "Ora Movie",
+      "owner": "vincent",
+      "team": "goud",
+      "color": "#FFD700"
     }
   ],
   "stats": [

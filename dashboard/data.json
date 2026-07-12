@@ -29,6 +29,20 @@
       "color": "#C0C0C0"
     },
     {
+      "id": "channel5",
+      "name": "JeviMovies",
+      "owner": "tibbe",
+      "team": "zilver",
+      "color": "#C0C0C0"
+    },
+    {
+      "id": "channel6",
+      "name": "FreviMovies",
+      "owner": "tibbe",
+      "team": "zilver",
+      "color": "#C0C0C0"
+    },
+    {
       "id": "channel8",
       "name": "Narrator Clips",
       "owner": "vincent",
@@ -666,7 +680,7 @@
     },
     {
       "id": 1780225447641,
-      "channelId": "channel1",
+      "channelId": "channel3",
       "subs": 409,
       "views": 1020541,
       "date": "2026-05-31",
@@ -693,14 +707,6 @@
       "channelId": "channel9",
       "subs": 754,
       "views": 1012592,
-      "date": "2026-05-31",
-      "timestamp": 1780185600000
-    },
-    {
-      "id": 1780225616258,
-      "channelId": "channel1",
-      "subs": 9372,
-      "views": 3944158,
       "date": "2026-05-31",
       "timestamp": 1780185600000
     },

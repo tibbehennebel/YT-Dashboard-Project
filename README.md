@@ -1,169 +1,48 @@
 # YouTube Battle Tracker 🏆
 
-Een interactieve dashboard om YouTube kanalen te vergelijken en de race naar monetizatie te volgen!
+Dashboard voor de YouTube-battle **Team Goud (Vincent) vs Team Zilver (Tibbe)** — 6v6 kanalen, race naar 16M views (monetisatie).
 
-**Vincent (Monte & Spyff) vs Tibbe**
+Eén statisch HTML-bestand (`dashboard/index.html`) + één databestand (`dashboard/data.json`). Geen build, geen frameworks, geen CDN's — werkt razendsnel, ook op gsm.
 
-## Features ✨
+## Tabs ✨
 
-- 📊 **1v1 Battle Overzicht** - Vergelijk elk kanaal individueel
-- 📈 **Grafieken** - Views, subscribers en groeisnelheid over tijd
-- 📜 **Historische Data** - Zie alle oude statistieken en veranderingen
-- 🎯 **Monetizatie Progress** - Track voortgang naar 18M views
-- ⚡ **Groeisnelheid** - Zie hoeveel views/subs per dag elk kanaal groeit
-- 💾 **GitHub Data Storage** - Data wordt opgeslagen in GitHub voor gedeelde toegang
-- 📱 **Responsive** - Werkt op desktop, tablet en mobiel
+- ⚔️ **Battle** — scorebord Goud vs Zilver, verdeling views/subs, voorsprong-grafiek, prognose wie wanneer inhaalt, teamkaarten met mini-grafiekjes
+- 📈 **Grafieken** — team-totalen, groei per dag, voorsprong over tijd en leaderboard; filter op views/subs en periode (alles / 30 / 14 dagen); elke grafiek heeft een 📋 tabel-knop
+- 📊 **Kanalen** — race naar 16M per kanaal met geschatte datum, mini-grafiek per kanaal, head-to-head vergelijker (kies 2 kanalen)
+- 🏅 **Mijlpalen** — records (grootste sprong, snelste groeier, eerste naar 1M), leiderschapswissels en alle gepasseerde mijlpalen
+- 📜 **Historiek** — alle updates als tabel met verschillen, plus beheer van nog-niet-gepushte invoer
 
-## Deployment op Netlify 🚀
+## Stats updaten 📝
 
-### Stap 1: GitHub Repository Setup
+1. Open de site en klik **➕ Stats invoeren** (of open direct `…/index.html#invoer`)
+2. Vul in "Alle kanalen"-modus alle nieuwe cijfers in één keer in (lege velden worden overgeslagen; huidige waarden staan als voorbeeld in de vakjes)
+3. Klik **💾 Opslaan** — de invoer wordt lokaal bewaard (je raakt niets kwijt bij sluiten!)
+4. Klik **⬇️ Export data.json** en vervang `dashboard/data.json` in GitHub → push
+5. Netlify deployt automatisch (±1 min); de ander klikt **🔄 Herladen**
 
-1. Maak een nieuwe GitHub repository (bijvoorbeeld `youtube-battle-tracker`)
-2. Upload deze bestanden naar de repo:
-   - `index.html`
-   - `data.json`
-   - `netlify.toml`
-   - `README.md`
-   - `.gitignore`
-   - `package.json`
+Zolang invoer alleen lokaal staat, zie je een gele 🕐-badge. Na een geslaagde push verdwijnt die vanzelf bij herladen.
 
-### Stap 2: Netlify Deployment
-
-1. Ga naar [Netlify](https://www.netlify.com)
-2. Klik op "Add new site" → "Import an existing project"
-3. Selecteer GitHub en kies jullie repository
-4. Deploy settings:
-   - Build command: (leeg laten)
-   - Publish directory: `.`
-5. Klik op "Deploy site"
-
-Je site is nu live op een URL zoals: `https://jouw-app-naam.netlify.app`
-
-### Stap 3: Auto-deployment instellen
-
-Netlify zal automatisch re-deployen wanneer jullie pushen naar GitHub. Dit betekent:
-- Push naar main branch → Automatische deployment binnen 1 minuut
-- Ververs de browser om nieuwe data te zien
-
-## Dagelijkse Workflow 📝
-
-### Data Toevoegen (Vincent of Tibbe):
-
-1. Open de live site: `https://jouw-app-naam.netlify.app`
-2. Klik op **"Nieuwe Stats Toevoegen"**
-3. Vul subscribers en views in voor alle kanalen
-4. Klik op **"Export Data (voor GitHub)"**
-5. Dit downloadt een nieuwe `data.json` file
-
-### Data Pushen naar GitHub:
-
-```bash
-# In je lokale repo folder:
-# Vervang de oude data.json met de nieuwe gedownloade versie
-
-git add data.json
-git commit -m "Update stats - [datum]"
-git push
-```
-
-### Data Ophalen (de ander):
-
-1. Wacht ~1 minuut tot Netlify deployed
-2. Open de site en klik op **"Reload van GitHub"**
-3. Je ziet nu de nieuwste stats!
-
-**Of** gewoon de pagina refreshen (F5) - de data wordt automatisch opnieuw geladen.
-
-## File Structuur 📁
-
-```
-youtube-battle-tracker/
-├── index.html          # De main app
-├── data.json          # Alle stats & kanaal config
-├── netlify.toml       # Netlify configuratie
-├── README.md          # Deze file
-├── .gitignore         # Git ignore rules
-└── package.json       # Project metadata
-```
-
-## Data Format (`data.json`)
+## Data-formaat (`dashboard/data.json`)
 
 ```json
 {
   "channels": [
-    {
-      "id": "channel1",
-      "name": "K1 - Monte",
-      "owner": "vincent",
-      "color": "#3B82F6"
-    },
-    ...
+    { "id": "channel1", "name": "FlaroClips", "owner": "tibbe", "team": "zilver", "color": "#C0C0C0" }
   ],
   "stats": [
-    {
-      "id": 1234567890,
-      "channelId": "channel1",
-      "subs": 1500,
-      "views": 250000,
-      "date": "2025-02-14",
-      "timestamp": 1739491200000
-    },
-    ...
+    { "id": 1234567890, "channelId": "channel1", "subs": 1500, "views": 250000, "date": "2026-05-12", "timestamp": 1778544000000 }
   ]
 }
 ```
 
-## Gebruik 🎮
+Kanaal toevoegen = nieuw object in `channels` (met `team`: `goud` of `zilver`). De hele site — inclusief het 6v6-label, teams en grafieken — volgt automatisch.
 
-1. Klik op "Nieuwe Stats Toevoegen"
-2. Kies het kanaal (Monte, Spyff, of Tibbe)
-3. Vul subscribers en views in
-4. Kies de datum
-5. Klik op "Opslaan"
-6. Export data en push naar GitHub
+## Deployment 🚀
 
-## Tabs
-
-- **📊 Overzicht** - Battle cards en monetizatie progress
-- **📈 Grafieken** - Alle visualisaties en trends
-- **📜 Historiek** - Complete data tabel
-
-## Technologie Stack 💻
-
-- React 18
-- Recharts (grafieken)
-- Tailwind CSS
-- GitHub (data storage)
-- Netlify (hosting + auto-deployment)
-
-## Tips 💡
-
-- **Auto-deployment**: Elke push naar GitHub triggert een nieuwe deployment (duurt ~1 min)
-- **Refresh**: Druk F5 of klik "Reload van GitHub" om nieuwe data te zien
-- **Dagelijkse ritual**: 1x per dag stats toevoegen en pushen
-- **Data backup**: GitHub is automatisch je backup - alle history is bewaard in commits
+GitHub-repo gekoppeld aan Netlify; elke push naar `main` deployt automatisch. Geen build-stap nodig (`netlify.toml` staat al goed).
 
 ## Troubleshooting 🔧
 
-**"Kon data niet laden van GitHub"**
-- Controleer of `data.json` bestaat in de repo
-- Wacht tot Netlify klaar is met deployen
-
-**"Ik zie oude data"**
-- Klik op "Reload van GitHub"
-- Of refresh de pagina (F5)
-- Check of je laatste push succesvol was
-
-**Lokale wijzigingen niet zichtbaar**
-- Vergeet niet te exporteren en pushen naar GitHub!
-- De gele waarschuwing toont of je dit nog moet doen
-
-## Browser Compatibiliteit
-
-- ✅ Chrome/Edge (laatste 2 versies)
-- ✅ Firefox (laatste 2 versies)
-- ✅ Safari (laatste 2 versies)
-
-## License
-
-MIT - Gebruik het zoals je wilt!
+- **"Kon data.json niet laden"** — check of `dashboard/data.json` bestaat en de deploy klaar is; klik "opnieuw proberen"
+- **Oude data** — klik 🔄 Herladen (de site herlaadt zelf ook als hij >5 min op de achtergrond stond)
+- **Invoer kwijt?** — kijk in 📜 Historiek onder "Lokale invoer"; daar kun je ze ook verwijderen

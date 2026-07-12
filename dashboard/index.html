@@ -8,246 +8,274 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="YT Battle">
-  <meta name="theme-color" content="#0b0e14">
+  <meta name="theme-color" content="#0e1116">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
   <style>
     :root {
-      --page: #0b0e14;
-      --card: #151a23;
-      --card-2: #1c2331;
-      --border: rgba(255,255,255,.07);
-      --ink: #f2f5fa;
-      --ink-2: #aab3c6;
-      --muted: #78829a;
-      --grid: #232b3a;
-      --axis: #39435c;
-      --gold: #c98500;       /* gevalideerde mark-kleur (grafieken) */
-      --gold-ui: #f2c14e;    /* heldere ui-chip / fill */
-      --silver: #7e8da3;     /* gevalideerde mark-kleur (grafieken) */
-      --silver-ui: #c3cddb;
+      --page: #0e1116;
+      --panel: #151a22;
+      --panel-2: #1b2130;
+      --ink: #edf0f4;
+      --ink-2: #9aa4b5;
+      --muted: #7a8499;
+      --hair: rgba(255,255,255,.09);
+      --grid: #1c2230;
+      --axis: #2b3345;
+      --gold: #c98500;        /* gevalideerde mark-kleur (grafieken) */
+      --gold-ui: #e8b33c;     /* ui-accent */
+      --silver: #7e8da3;      /* gevalideerde mark-kleur */
+      --silver-ui: #c7d0dc;
       --good: #3fd06c;
       --bad: #f27d7d;
-      --accent: #8b7cf7;
-      --accent-ink: #17122e;
+      --disp: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+      --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; min-width: 0; }
     html { background: var(--page); -webkit-text-size-adjust: 100%; }
     html, body { max-width: 100%; overflow-x: hidden; }
-    body {
-      margin: 0; background: var(--page); color: var(--ink);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .app { max-width: 1080px; margin: 0 auto; padding: 14px 14px 60px;
-      padding-left: max(14px, env(safe-area-inset-left));
-      padding-right: max(14px, env(safe-area-inset-right));
-      padding-top: max(14px, env(safe-area-inset-top)); }
+    body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--body);
+      font-size: 14px; line-height: 1.45; -webkit-tap-highlight-color: transparent; }
+    .app { max-width: 1020px; margin: 0 auto; padding: 18px 18px 80px;
+      padding-left: max(18px, env(safe-area-inset-left));
+      padding-right: max(18px, env(safe-area-inset-right));
+      padding-top: max(18px, env(safe-area-inset-top)); }
     svg { display: block; max-width: 100%; }
-    button { font: inherit; color: inherit; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--gold-ui); outline-offset: 2px; border-radius: 2px; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
-    /* header */
-    .hdr { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 6px 0 14px; }
-    .hdr h1 { font-size: 22px; margin: 0; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
-    .hdr .sub { color: var(--muted); font-size: 13px; width: 100%; margin-top: -4px; }
-    .hdr-spacer { flex: 1; }
-    .leader-chip { font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); white-space: nowrap; }
+    /* ── typografische bouwstenen ─────────────────────────────── */
+    .eyebrow { font-family: var(--disp); font-weight: 600; font-size: 13px; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted); }
+    .disp { font-family: var(--disp); font-weight: 600; letter-spacing: .01em; }
 
-    /* buttons & bars */
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .btn { border: 1px solid var(--border); background: var(--card); color: var(--ink-2);
-      border-radius: 12px; padding: 9px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px; transition: background .15s, color .15s; }
-    .btn:hover { background: var(--card-2); color: var(--ink); }
-    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-    .btn-primary:hover { background: #a094ff; color: var(--accent-ink); }
-    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 9px; }
-    .pending-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
-      color: #ffd48a; background: rgba(242,193,78,.12); border: 1px solid rgba(242,193,78,.35);
-      border-radius: 12px; padding: 9px 12px; }
+    /* ── header ───────────────────────────────────────────────── */
+    .hdr { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding-bottom: 14px; }
+    .brand { font-family: var(--disp); font-weight: 700; font-size: 21px; letter-spacing: .12em; text-transform: uppercase; }
+    .brand em { font-style: normal; color: var(--gold-ui); }
+    .hdr-meta { margin-left: auto; font-family: var(--disp); font-weight: 500; font-size: 13px;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 
-    /* tabs */
-    .tabs { position: sticky; top: 0; z-index: 30; display: flex; gap: 6px; flex-wrap: wrap;
-      padding: 8px 0 10px; margin-bottom: 12px; background: linear-gradient(var(--page) 85%, transparent); }
-    .tab { border: 1px solid var(--border); background: var(--card); color: var(--ink-2);
-      border-radius: 999px; padding: 8px 14px; font-size: 13.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-    .tab.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    /* ── acties ───────────────────────────────────────────────── */
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 2px 0 6px; }
+    .btn { font-family: var(--disp); font-weight: 600; font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ink-2); border: 1px solid var(--hair); border-radius: 8px; padding: 8px 14px;
+      transition: color .15s, border-color .15s, background .15s; }
+    .btn:hover { color: var(--ink); border-color: rgba(255,255,255,.22); }
+    .btn-primary { background: var(--gold-ui); border-color: var(--gold-ui); color: #241a04; }
+    .btn-primary:hover { background: #f0c05a; border-color: #f0c05a; color: #241a04; }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    select.btn { background: var(--panel); color: var(--ink); -webkit-appearance: none; appearance: none; }
+    .pending-note { font-family: var(--disp); font-weight: 600; font-size: 12.5px; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--gold-ui); border-bottom: 1px solid rgba(232,179,60,.4); padding-bottom: 1px; }
 
-    /* cards */
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
-    .card h3 { margin: 0; font-size: 15.5px; display: flex; align-items: center; gap: 7px; }
-    .card-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; margin-bottom: 4px; }
-    .card-sub { color: var(--muted); font-size: 12.5px; margin: 2px 0 10px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; }
+    /* ── tabs: chyron-onderstreping ───────────────────────────── */
+    .tabs { position: sticky; top: 0; z-index: 30; display: flex; gap: 22px; overflow-x: auto; scrollbar-width: none;
+      background: linear-gradient(var(--page) 88%, transparent); padding: 12px 0 0; margin-bottom: 22px;
+      border-bottom: 1px solid var(--hair); }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { font-family: var(--disp); font-weight: 600; font-size: 14px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); padding: 6px 2px 10px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+    .tab:hover { color: var(--ink-2); }
+    .tab.on { color: var(--ink); border-bottom-color: var(--gold-ui); }
 
-    /* scoreboard */
-    .score { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 14px; }
-    .side { position: relative; border-radius: 14px; padding: 16px 14px 13px; background: var(--card-2);
-      border: 1px solid var(--border); border-top: 3px solid var(--silver); text-align: center; }
-    .side.gold { border-top-color: var(--gold-ui); }
-    .side.silver { border-top-color: var(--silver-ui); }
-    .side .tname { font-size: 13px; font-weight: 700; color: var(--ink-2); letter-spacing: .04em; }
-    .side .owner { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
-    .side .big { font-size: clamp(26px, 7vw, 40px); font-weight: 750; letter-spacing: -.02em; margin: 6px 0 0; }
-    .side .unit { font-size: 12px; color: var(--muted); }
-    .side .subrow { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
-    .crown { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800;
-      padding: 3px 10px; border-radius: 999px; background: var(--gold-ui); color: #3a2b03; white-space: nowrap; }
-    .crown.s { background: var(--silver-ui); color: #1c2430; }
-    .vs { align-self: center; font-weight: 800; font-size: 14px; color: var(--muted);
-      border: 1px solid var(--border); background: var(--card-2); border-radius: 999px; width: 42px; height: 42px;
-      display: flex; align-items: center; justify-content: center; }
+    /* ── secties (geen kaarten: hairline + eyebrow) ───────────── */
+    .sect { border-top: 1px solid var(--hair); padding-top: 14px; margin: 30px 0; }
+    .sect-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 4px; }
+    .sect-head h3 { margin: 0; font-family: var(--disp); font-weight: 600; font-size: 14px;
+      letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); }
+    .sect-head .aside { margin-left: auto; }
+    .sect-sub { color: var(--muted); font-size: 13px; margin: 2px 0 12px; max-width: 62ch; }
+    .linkbtn { font-family: var(--disp); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); border-bottom: 1px solid var(--hair); padding-bottom: 1px; }
+    .linkbtn:hover { color: var(--ink); }
 
-    /* battle share bar */
-    .share { margin: 12px 0 4px; }
-    .share-head { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-2); margin-bottom: 5px; }
-    .share-head b { color: var(--ink); font-variant-numeric: tabular-nums; }
-    .share-track { display: flex; gap: 2px; height: 26px; border-radius: 999px; overflow: hidden; }
-    .share-track.slim { height: 14px; }
-    .seg { display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; transition: width .6s; }
-    .seg.g { background: linear-gradient(90deg, #d9a32e, var(--gold-ui)); color: #3a2b03; }
-    .seg.z { background: linear-gradient(90deg, #9aa7ba, var(--silver-ui)); color: #1c2430; }
+    /* ── scorebug (signatuur) ─────────────────────────────────── */
+    .bug { padding: 26px 0 6px; }
+    .bug-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
+    .bug-side { display: flex; flex-direction: column; gap: 2px; }
+    .bug-side.r { text-align: right; align-items: flex-end; }
+    .bug-team { font-family: var(--disp); font-weight: 700; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; }
+    .bug-team.g { color: var(--gold-ui); } .bug-team.z { color: var(--silver-ui); }
+    .bug-owner { font-family: var(--disp); font-weight: 500; font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); }
+    .bug-score { font-family: var(--disp); font-weight: 600; font-size: clamp(46px, 11vw, 78px); line-height: 1.02;
+      letter-spacing: .01em; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+    .bug-subs { font-size: 13px; color: var(--ink-2); }
+    .bug-vs { align-self: center; font-family: var(--disp); font-weight: 600; font-size: 14px; letter-spacing: .2em;
+      color: var(--muted); padding: 0 6px; }
+    .lead-tag { display: inline-block; font-family: var(--disp); font-weight: 700; font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; color: #241a04; background: var(--gold-ui); border-radius: 3px; padding: 2px 7px 1px; margin-bottom: 6px; }
+    .lead-tag.z { background: var(--silver-ui); color: #10151d; }
+    .lead-slot { min-height: 22px; }
+    .poss { margin-top: 20px; }
+    .poss + .poss { margin-top: 14px; }
+    .poss-track { display: flex; gap: 2px; height: 12px; border-radius: 3px; overflow: hidden; }
+    .poss-track.slim { height: 6px; }
+    .poss-g { background: linear-gradient(90deg, #b8830e, var(--gold-ui)); transition: width .9s cubic-bezier(.2,.7,.2,1); }
+    .poss-z { background: linear-gradient(270deg, #9dabc0, var(--silver-ui)); transition: width .9s cubic-bezier(.2,.7,.2,1); }
+    .poss-foot { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px;
+      font-family: var(--disp); font-weight: 500; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .poss-foot b { color: var(--ink-2); font-weight: 600; }
+    .bug-line { margin: 20px auto 0; max-width: 70ch; text-align: center; color: var(--ink-2); font-size: 14px; }
 
-    /* KPI tiles */
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px; margin-bottom: 14px; }
-    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
-    .kpi .lbl { font-size: 12px; color: var(--muted); }
-    .kpi .val { font-size: 23px; font-weight: 700; letter-spacing: -.01em; margin-top: 3px; }
-    .kpi .sub { font-size: 12px; color: var(--ink-2); margin-top: 3px; }
+    /* ── kpi-strip: tekstkolommen met hairlines ───────────────── */
+    .strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair);
+      border-bottom: 1px solid var(--hair); margin: 26px 0; }
+    .strip .cell { padding: 14px 16px; border-left: 1px solid var(--hair); }
+    .strip .cell:first-child { border-left: 0; padding-left: 0; }
+    .cell .lbl { font-family: var(--disp); font-weight: 600; font-size: 11.5px; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted); }
+    .cell .val { font-family: var(--disp); font-weight: 600; font-size: 27px; margin-top: 3px; line-height: 1.1; }
+    .cell .sub { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+    @media (max-width: 640px) {
+      .strip { grid-template-columns: 1fr 1fr; }
+      .strip .cell { border-left: 0; padding-left: 0; }
+      .strip .cell:nth-child(2n) { border-left: 1px solid var(--hair); padding-left: 16px; }
+      .strip .cell:nth-child(n+3) { border-top: 1px solid var(--hair); }
+    }
     .up { color: var(--good); } .down { color: var(--bad); }
 
-    /* legend & charts */
-    .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 2px 0 8px; }
-    .leg { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
-    .leg .sw { width: 14px; height: 3px; border-radius: 2px; }
-    .leg .sw.box { width: 10px; height: 10px; border-radius: 3px; }
+    /* ── team-identiteit zonder ruis: swatch + woord ──────────── */
+    .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; vertical-align: 0; flex: none; }
+    .sw.g { background: var(--gold-ui); } .sw.z { background: var(--silver-ui); }
+    .tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--disp); font-weight: 600;
+      font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+    /* ── legenda & grafieken ──────────────────────────────────── */
+    .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 2px 0 10px; }
+    .leg { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+    .leg .k { width: 14px; height: 3px; border-radius: 2px; }
+    .leg .k.box { width: 10px; height: 10px; border-radius: 2px; }
     .chart-host { position: relative; width: 100%; }
-    .chart-empty { color: var(--muted); font-size: 13px; font-style: italic; padding: 18px 0; }
+    .chart-empty { color: var(--muted); font-size: 13px; padding: 16px 0; }
     .gridline { stroke: var(--grid); stroke-width: 1; }
     .axline { stroke: var(--axis); stroke-width: 1.5; }
-    .ticktext { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
-    .xticktext { fill: var(--muted); font-size: 11px; }
-    .endlabel { fill: var(--ink); font-size: 12px; font-weight: 600; }
-    .crossline { stroke: #4a5570; stroke-width: 1; }
+    .ticktext { fill: var(--muted); font-size: 11px; font-family: var(--body); font-variant-numeric: tabular-nums; }
+    .xticktext { fill: var(--muted); font-size: 11px; font-family: var(--body); }
+    .endlabel { fill: var(--ink); font-size: 12px; font-weight: 600; font-family: var(--body); }
+    .crossline { stroke: #46516a; stroke-width: 1; }
     .tip { position: absolute; top: 6px; left: 0; pointer-events: none; display: none; z-index: 5;
-      background: #0e1219; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
-      box-shadow: 0 6px 20px rgba(0,0,0,.45); font-size: 12.5px; max-width: 240px; }
-    .tip-date { color: var(--muted); font-size: 11.5px; margin-bottom: 4px; }
-    .tip-row { display: flex; align-items: center; gap: 7px; margin-top: 2px; white-space: nowrap; }
+      background: var(--panel-2); border: 1px solid var(--hair); border-radius: 8px; padding: 8px 11px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5); font-size: 12.5px; max-width: 250px; }
+    .tip-date { font-family: var(--disp); font-weight: 600; font-size: 11px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+    .tip-row { display: flex; align-items: center; gap: 7px; margin-top: 3px; white-space: nowrap; }
     .tip-key { width: 12px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-    .tip-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tip-val { font-weight: 600; font-variant-numeric: tabular-nums; }
     .tip-lbl { color: var(--ink-2); }
 
-    /* tables */
+    /* ── tabellen ─────────────────────────────────────────────── */
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table.dt { border-collapse: collapse; width: 100%; font-size: 13px; }
-    .dt th { text-align: left; color: var(--muted); font-size: 11.5px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .05em; padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
-    .dt td { padding: 7px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+    table.dt { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+    .dt th { text-align: left; font-family: var(--disp); font-weight: 600; font-size: 11.5px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); padding: 7px 10px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+    .dt td { padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
     .dt td.num, .dt th.num { text-align: right; font-variant-numeric: tabular-nums; }
     .dt tr:last-child td { border-bottom: 0; }
-    .chart-table { margin-top: 10px; display: none; }
+    .chart-table { margin-top: 12px; display: none; }
     .chart-table.open { display: block; }
 
-    /* leaderboard */
-    .lb-row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; }
-    .lb-row.top { background: var(--card-2); border: 1px solid var(--border); }
-    .lb-row + .lb-row { margin-top: 6px; }
-    .lb-rank { width: 26px; text-align: center; font-weight: 800; font-size: 15px; color: var(--muted); flex-shrink: 0; }
-    .lb-main { flex: 1; }
-    .lb-name { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 650; margin-bottom: 4px; }
-    .lb-bar { height: 6px; border-radius: 999px; background: rgba(126,141,163,.14); overflow: hidden; }
-    .lb-fill { height: 100%; border-radius: 999px; transition: width .6s; }
-    .lb-nums { text-align: right; flex-shrink: 0; }
-    .lb-nums .v { font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
-    .lb-nums .s { font-size: 11.5px; color: var(--muted); }
-    .chip { font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
-    .chip.g { background: rgba(242,193,78,.15); color: var(--gold-ui); }
-    .chip.z { background: rgba(195,205,219,.13); color: var(--silver-ui); }
-    .chip.new { background: rgba(139,124,247,.15); color: #b9b0ff; }
-    .rankmove { font-size: 11px; font-weight: 700; }
+    /* ── lijstrijen (leaderboard / teams / race / feed) ───────── */
+    .row { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--grid); }
+    .row:last-child { border-bottom: 0; }
+    .rank { font-family: var(--disp); font-weight: 600; font-size: 19px; color: var(--muted); width: 28px;
+      text-align: center; flex: none; font-variant-numeric: tabular-nums; }
+    .rank.m1 { color: var(--gold-ui); } .rank.m2 { color: var(--silver-ui); } .rank.m3 { color: #b78757; }
+    .row-main { flex: 1; }
+    .row-name { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 14.5px; }
+    .row-bar { height: 5px; border-radius: 999px; background: rgba(122,132,153,.15); overflow: hidden; margin-top: 6px; }
+    .row-fill { height: 100%; border-radius: 999px; transition: width .7s; }
+    .row-nums { text-align: right; flex: none; }
+    .row-nums .v { font-family: var(--disp); font-weight: 600; font-size: 18px; font-variant-numeric: tabular-nums; line-height: 1.15; }
+    .row-nums .s { font-size: 12px; color: var(--muted); }
+    .rankmove { font-family: var(--disp); font-weight: 600; font-size: 11.5px; letter-spacing: .05em; }
+    .newmark { font-family: var(--disp); font-weight: 600; font-size: 11px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); border: 1px solid var(--hair); border-radius: 3px; padding: 1px 6px; }
+    .small { font-size: 12px; } .muted { color: var(--muted); } .nowrap { white-space: nowrap; }
 
-    /* team detail rows */
-    .trow { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--grid); }
-    .trow:first-of-type { border-top: 0; }
-    .trow .nm { flex: 1; font-size: 13.5px; font-weight: 600; }
-    .trow .vals { text-align: right; }
-    .trow .vals .v { font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
-    .trow .vals .s { font-size: 11.5px; color: var(--muted); }
-    .trow .spark { flex-shrink: 0; }
+    /* ── teams twee kolommen ──────────────────────────────────── */
+    .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
+    @media (max-width: 720px) { .teams { grid-template-columns: 1fr; } }
+    .team-head { display: flex; align-items: baseline; gap: 10px; padding: 6px 0 4px;
+      border-bottom: 1px solid var(--hair); }
+    .team-head .t { font-family: var(--disp); font-weight: 700; font-size: 14px; letter-spacing: .16em; text-transform: uppercase; }
+    .team-head .o { margin-left: auto; font-family: var(--disp); font-weight: 500; font-size: 12px;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .spark { flex: none; }
 
-    /* race meters */
-    .race-row { padding: 10px 0; border-top: 1px solid var(--grid); }
-    .race-row:first-of-type { border-top: 0; padding-top: 2px; }
-    .race-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-    .race-top .nm { font-weight: 650; font-size: 13.5px; flex: 1; }
-    .race-top .v { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-2); }
-    .meter { height: 10px; border-radius: 999px; overflow: hidden; }
-    .meter.g { background: rgba(201,133,0,.18); } .meter.z { background: rgba(126,141,163,.18); }
+    /* ── race meters ──────────────────────────────────────────── */
+    .race-top { display: flex; align-items: baseline; gap: 10px; }
+    .race-top .v { margin-left: auto; font-family: var(--disp); font-weight: 600; font-size: 15px;
+      font-variant-numeric: tabular-nums; color: var(--ink-2); }
+    .meter { height: 7px; border-radius: 999px; overflow: hidden; margin-top: 7px; }
+    .meter.g { background: rgba(201,133,0,.16); } .meter.z { background: rgba(126,141,163,.16); }
     .meter-fill { height: 100%; border-radius: 999px; transition: width .7s; min-width: 2px; }
-    .race-sub { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+    .race-sub { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .race-item { padding: 12px 0; border-bottom: 1px solid var(--grid); }
+    .race-item:last-child { border-bottom: 0; }
 
-    /* small multiples */
-    .minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 158px), 1fr)); gap: 10px; }
-    .mini { background: var(--card-2); border: 1px solid var(--border); border-radius: 13px; padding: 10px 12px; }
-    .mini .nm { font-size: 12.5px; font-weight: 650; display: flex; gap: 5px; align-items: center; overflow: hidden; white-space: nowrap; }
-    .mini .v { font-size: 17px; font-weight: 750; margin-top: 3px; }
-    .mini .d { font-size: 11px; margin-top: 1px; }
-    .mini .sp { margin-top: 6px; }
+    /* ── mini-multiples ───────────────────────────────────────── */
+    .minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 156px), 1fr)); gap: 10px; }
+    .mini { background: var(--panel); border-radius: 10px; padding: 11px 13px; }
+    .mini .nm { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+      overflow: hidden; white-space: nowrap; }
+    .mini .v { font-family: var(--disp); font-weight: 600; font-size: 20px; margin-top: 4px; }
+    .mini .d { font-size: 11.5px; margin-top: 1px; color: var(--muted); }
+    .mini .sp { margin-top: 8px; }
 
-    /* segmented controls / filters */
-    .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
-    .segc { display: inline-flex; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 3px; gap: 2px; }
-    .segc button { border: 0; background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 600;
-      padding: 6px 12px; border-radius: 9px; cursor: pointer; }
-    .segc button.on { background: var(--accent); color: var(--accent-ink); }
+    /* ── filters ──────────────────────────────────────────────── */
+    .filters { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin: 0 0 4px; }
+    .segc { display: inline-flex; gap: 14px; }
+    .segc button { font-family: var(--disp); font-weight: 600; font-size: 13px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted); padding: 4px 1px; border-bottom: 2px solid transparent; }
+    .segc button:hover { color: var(--ink-2); }
+    .segc button.on { color: var(--ink); border-bottom-color: var(--gold-ui); }
+    .filters .sep { width: 1px; height: 16px; background: var(--hair); }
 
-    /* form */
-    .frm label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
-    .frm input, .frm select { width: 100%; background: var(--card-2); color: var(--ink); border: 1px solid var(--border);
-      border-radius: 10px; padding: 9px 11px; font-size: 16px; }
-    .frm input:focus, .frm select:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
-    .frm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px; }
-    .qrow { display: grid; grid-template-columns: minmax(90px, 1.2fr) 1fr 1fr; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--grid); }
-    .qrow .qn { font-size: 12.5px; font-weight: 600; display: flex; flex-direction: column; }
+    /* ── formulier ────────────────────────────────────────────── */
+    .panel { background: var(--panel); border-radius: 14px; padding: 18px; margin: 18px 0; }
+    .frm label { display: block; font-family: var(--disp); font-weight: 600; font-size: 11.5px;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 5px; }
+    .frm input, .frm select { width: 100%; background: var(--page); color: var(--ink); border: 1px solid var(--hair);
+      border-radius: 8px; padding: 9px 11px; font-size: 16px; font-family: var(--body); }
+    .frm input:focus, .frm select:focus { outline: 2px solid var(--gold-ui); outline-offset: 0; border-color: transparent; }
+    .frm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px; }
+    .qrow { display: grid; grid-template-columns: minmax(96px, 1.2fr) 1fr 1fr; gap: 8px; align-items: center;
+      padding: 7px 0; border-top: 1px solid var(--grid); }
+    .qrow .qn { font-size: 13px; font-weight: 600; display: flex; flex-direction: column; }
     .qrow .qn small { color: var(--muted); font-weight: 400; font-size: 10.5px; }
-    .form-foot { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .qhead { display: grid; grid-template-columns: minmax(96px, 1.2fr) 1fr 1fr; gap: 8px; padding: 4px 0; }
+    .form-foot { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
 
-    /* milestones */
-    .ms-row { display: flex; gap: 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--grid); font-size: 13.5px; }
-    .ms-row:first-of-type { border-top: 0; }
-    .ms-row .d { color: var(--muted); font-size: 12px; white-space: nowrap; min-width: 64px; font-variant-numeric: tabular-nums; }
-    .rec { background: var(--card-2); border: 1px solid var(--border); border-radius: 13px; padding: 12px 14px; }
-    .recs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 10px; }
-    .rec .t { font-size: 12px; color: var(--muted); }
-    .rec .v { font-size: 16px; font-weight: 700; margin-top: 3px; }
-    .rec .s { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+    /* ── mijlpalen-feed ───────────────────────────────────────── */
+    .feed-row { display: flex; gap: 14px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--grid); font-size: 14px; }
+    .feed-row:last-child { border-bottom: 0; }
+    .feed-date { font-family: var(--disp); font-weight: 600; font-size: 11.5px; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); min-width: 58px; flex: none; font-variant-numeric: tabular-nums; }
+    .feed-tag { flex: none; }
 
-    /* history */
-    .hist-date { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    details.wf { border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 14px; background: var(--card); color: var(--ink-2); font-size: 13.5px; }
-    details.wf summary { cursor: pointer; font-weight: 650; color: var(--ink); }
-    details.wf ol { margin: 10px 0 2px; padding-left: 20px; }
-    details.wf li { margin: 4px 0; }
+    /* ── historiek ────────────────────────────────────────────── */
+    .hist-date { font-family: var(--disp); font-weight: 600; font-size: 13.5px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px; }
+    details.wf { border-top: 1px solid var(--hair); padding: 14px 0 4px; margin: 24px 0; color: var(--ink-2); font-size: 13.5px; }
+    details.wf summary { cursor: pointer; font-family: var(--disp); font-weight: 600; font-size: 13px;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); list-style-position: outside; }
+    details.wf ol { margin: 12px 0 4px; padding-left: 20px; }
+    details.wf li { margin: 5px 0; }
 
-    /* toast + error */
-    #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
-      background: #0e1219; color: var(--ink); border: 1px solid var(--border); border-radius: 12px;
+    /* ── toast & fouten ───────────────────────────────────────── */
+    #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(16px);
+      background: var(--panel-2); color: var(--ink); border: 1px solid var(--hair); border-radius: 10px;
       padding: 11px 16px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: all .25s;
-      z-index: 90; max-width: min(92vw, 480px); text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
+      z-index: 90; max-width: min(92vw, 480px); text-align: center; box-shadow: 0 10px 32px rgba(0,0,0,.55); }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .errbar { background: rgba(240,90,90,.12); border: 1px solid rgba(240,90,90,.4); color: #ffb9b9;
-      border-radius: 12px; padding: 12px 14px; font-size: 13.5px; margin-bottom: 12px; }
-
-    .muted { color: var(--muted); }
-    .small { font-size: 12px; }
-    .nowrap { white-space: nowrap; }
-    @media (max-width: 560px) {
-      .score { grid-template-columns: 1fr; }
-      .vs { display: none; }
-      .side .big { font-size: 32px; }
-    }
+    .errbar { border-left: 3px solid var(--bad); color: #f3b3b3; padding: 10px 14px; font-size: 13.5px; margin: 14px 0; }
   </style>
 </head>
 <body>
@@ -262,15 +290,14 @@
   const DATA_URL = "./data.json";
   const C = {
     gold: "#c98500", silver: "#7e8da3",
-    goldUi: "#f2c14e", silverUi: "#c3cddb",
+    goldUi: "#e8b33c", silverUi: "#c7d0dc",
     blue: "#3987e5", red: "#e66767",
-    good: "#3fd06c", bad: "#f27d7d",
-    card: "#151a23",
+    surface: "#0e1116",
   };
-  const MEDAL = { goud: "🥇", zilver: "🥈" };
   const TEAMNAME = { goud: "Goud", zilver: "Zilver" };
   const VIEW_MILESTONES = [100e3, 250e3, 500e3, 1e6, 2e6, 3e6, 5e6, 8e6, 10e6, TARGET];
   const SUB_MILESTONES = [100, 250, 500, 1000, 2500, 5000, 10000];
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ============================== tiny DOM lib ============================ */
   function el(tag, attrs, ...kids) {
@@ -306,10 +333,20 @@
     t.textContent = msg; t.classList.add("show");
     clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), ms);
   }
+  function countUp(node, target, fmt, dur = 950) {
+    if (REDUCED || !isFinite(target) || target <= 0) { node.textContent = fmt(target); return; }
+    const t0 = performance.now();
+    (function tick(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      node.textContent = fmt(target * e);
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
 
   /* ============================== formatting ============================= */
   function trimZeros(s) { return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s; }
-  function fmtC(n) { // compact: 8,06M / 13,3K / 482
+  function fmtC(n) {
     if (n == null || !isFinite(n)) return "–";
     const sign = n < 0 ? "-" : ""; n = Math.abs(n);
     let s;
@@ -337,10 +374,11 @@
   let FETCHED = { channels: [], stats: [] };
   let pending = [];
   let DB = { channels: [], stats: [] };
-  let SNAP = new Map();      // channelId -> [{date, ts, subs, views, id}] gededupliceerd per datum
+  let SNAP = new Map();
   let ALL_DATES = [];
   let lastFetch = 0;
   let chartJobs = [];
+  let heroAnimated = false;
 
   function loadPending() {
     try { return JSON.parse(localStorage.getItem("ytbattle_pending_v1") || "[]"); } catch { return []; }
@@ -425,7 +463,7 @@
   function diffSeries(metric, dates) {
     return dates.map(d => teamTotal("goud", metric, d) - teamTotal("zilver", metric, d));
   }
-  function leadHistory() { // wissels van de leiding (views)
+  function leadHistory() {
     const dates = ALL_DATES, out = [];
     let cur = 0;
     for (let i = 0; i < dates.length; i++) {
@@ -440,26 +478,23 @@
     for (const ch of DB.channels) {
       const snaps = snapsOf(ch.id);
       if (!snaps.length) continue;
-      out.push({ date: snaps[0].date, emoji: "🐣", text: `${ch.name} deed voor het eerst mee`, team: ch.team, sort: 0 });
+      out.push({ date: snaps[0].date, text: `${ch.name} deed voor het eerst mee`, team: ch.team, sort: 0 });
       for (const t of VIEW_MILESTONES) {
         const hit = snaps.find(s => s.views >= t);
         if (hit) out.push({
           date: hit.date, sort: t, team: ch.team,
-          emoji: t >= TARGET ? "🎉" : t >= 10e6 ? "🌟" : t >= 5e6 ? "💥" : t >= 1e6 ? "🚀" : "✨",
-          text: t >= TARGET ? `${ch.name} haalde ${fmtC(t)} views — GEMONETISEERD! 💰` : `${ch.name} passeerde ${fmtC(t)} views`,
+          text: t >= TARGET ? `${ch.name} haalde ${fmtC(t)} views — gemonetiseerd! 🎉` : `${ch.name} passeerde ${fmtC(t)} views`,
         });
       }
       for (const t of SUB_MILESTONES) {
         const hit = snaps.find(s => s.subs >= t);
-        if (hit) out.push({ date: hit.date, sort: t, team: ch.team, emoji: t >= 10000 ? "🏆" : "👥", text: `${ch.name} passeerde ${fmtC(t)} subs` });
+        if (hit) out.push({ date: hit.date, sort: t, team: ch.team, text: `${ch.name} passeerde ${fmtC(t)} subs` });
       }
     }
     return out.sort((a, b) => b.date.localeCompare(a.date) || b.sort - a.sort);
   }
   function records() {
-    let jump = null; // grootste sprong in één update
-    let fast = null; // snelste groeier nu
-    let first1m = null;
+    let jump = null, fast = null, first1m = null;
     for (const ch of DB.channels) {
       const a = snapsOf(ch.id);
       for (let i = 1; i < a.length; i++) {
@@ -482,14 +517,14 @@
     const lead = gv >= zv ? "goud" : "zilver", trail = lead === "goud" ? "zilver" : "goud";
     const gap = Math.abs(gv - zv);
     const lr = teamRate(lead, "views"), tr = teamRate(trail, "views");
-    let s = `${MEDAL[lead]} ${TEAMNAME[lead]} leidt met ${fmtC(gap)} views voorsprong.`;
+    let s = `${TEAMNAME[lead]} leidt met ${fmtC(gap)} views voorsprong.`;
     if (lr != null && tr != null) {
       if (tr > lr) {
         const days = gap / (tr - lr);
-        if (days < 3650) s += ` ${MEDAL[trail]} ${TEAMNAME[trail]} groeit sneller (+${fmtC(tr)}/dag vs +${fmtC(lr)}/dag) en haalt bij dit tempo in rond ${fmtDateWk(isoAddDays(lastDate(), Math.ceil(days)))}. 🔮`;
-        else s += ` ${MEDAL[trail]} ${TEAMNAME[trail]} groeit iets sneller, maar inhalen duurt bij dit tempo nog jaren. 🐢`;
+        if (days < 3650) s += ` ${TEAMNAME[trail]} groeit sneller (+${fmtC(tr)} per dag tegenover +${fmtC(lr)}) en haalt bij dit tempo in rond ${fmtDateWk(isoAddDays(lastDate(), Math.ceil(days)))}.`;
+        else s += ` ${TEAMNAME[trail]} groeit iets sneller, maar inhalen duurt bij dit tempo nog jaren.`;
       } else {
-        s += ` En ${TEAMNAME[lead]} groeit ook nog eens sneller (+${fmtC(lr)}/dag vs +${fmtC(tr)}/dag) — de voorsprong groeit. 📈`;
+        s += ` ${TEAMNAME[lead]} groeit bovendien sneller (+${fmtC(lr)} per dag tegenover +${fmtC(tr)}) — de voorsprong groeit.`;
       }
     }
     return s;
@@ -535,8 +570,6 @@
     return d.trim();
   }
 
-  // Lijngrafiek met crosshair-tooltip. cfg: { dates, series:[{label,color,values,emoji?}],
-  //   height?, showZero?, area?, diverging?, endLabels?, yFmt? }
   function drawLine(host, cfg) {
     host.textContent = "";
     const dates = cfg.dates, n = dates.length;
@@ -555,7 +588,6 @@
     const padR = cfg.endLabels ? 20 + Math.max(...endTexts.map(t => t.length), 0) * 6.8 : 14;
     const padT = 12, padB = 26;
     const iw = W - padL - padR, ih = H - padT - padB;
-    // tijd-geschaalde x-as: ongelijke intervallen tussen updates blijven eerlijk
     const xs = dates.map(d => Date.parse(d + "T00:00:00Z"));
     const xspan = xs[n - 1] - xs[0] || 1;
     const X = i => padL + ((xs[i] - xs[0]) / xspan) * iw;
@@ -568,7 +600,6 @@
     }
     if (cfg.showZero && lo < 0 && hi > 0) svg.append(sv("line", { class: "axline", x1: padL, x2: W - padR, y1: Y(0).toFixed(1), y2: Y(0).toFixed(1) }));
 
-    // x-labels: doelposities gelijkmatig over de breedte, gesnapt naar echte datapunten
     const want = Math.max(3, Math.floor(iw / 68));
     const snapped = [];
     for (let k = 0; k < want; k++) {
@@ -609,16 +640,14 @@
       }
       svg.append(sv("path", { d, fill: "none", stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
     }
-    // eindmarkers met surface-ring
     const lastPts = series.map(s => {
       let i = n - 1; while (i >= 0 && s.values[i] == null) i--;
       return i < 0 ? null : { x: X(i), y: Y(s.values[i]), s };
     }).filter(Boolean);
-    for (const p of lastPts) svg.append(sv("circle", { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: 4.5, fill: p.s.color, stroke: C.card, "stroke-width": 2 }));
+    for (const p of lastPts) svg.append(sv("circle", { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: 4.5, fill: p.s.color, stroke: C.surface, "stroke-width": 2 }));
 
-    // eindlabels (waarde in ink, identiteit via kleurstreepje) met botsing-nudge
     if (cfg.endLabels) {
-      const labs = lastPts.map((p, i) => ({ ...p, text: endTexts[series.indexOf(p.s)], yl: p.y })).sort((a, b) => a.yl - b.yl);
+      const labs = lastPts.map(p => ({ ...p, text: endTexts[series.indexOf(p.s)], yl: p.y })).sort((a, b) => a.yl - b.yl);
       for (let i = 1; i < labs.length; i++) if (labs[i].yl < labs[i - 1].yl + 16) labs[i].yl = labs[i - 1].yl + 16;
       const over = labs.length ? labs[labs.length - 1].yl - (H - padB - 2) : 0;
       if (over > 0) for (const l of labs) l.yl -= over;
@@ -629,10 +658,9 @@
       }
     }
 
-    // crosshair + tooltip
     const cross = sv("line", { class: "crossline", y1: padT, y2: padT + ih, visibility: "hidden" });
     svg.append(cross);
-    const hoverDots = series.map(s => { const c = sv("circle", { r: 4.5, fill: s.color, stroke: C.card, "stroke-width": 2, visibility: "hidden" }); svg.append(c); return c; });
+    const hoverDots = series.map(s => { const c = sv("circle", { r: 4.5, fill: s.color, stroke: C.surface, "stroke-width": 2, visibility: "hidden" }); svg.append(c); return c; });
     const tip = el("div", { class: "tip" });
     host.append(svg, tip);
     const hit = sv("rect", { x: padL, y: 0, width: Math.max(1, iw), height: H, fill: "transparent" });
@@ -648,7 +676,7 @@
         const v = s.values[i];
         if (v == null) { hoverDots[si].setAttribute("visibility", "hidden"); return; }
         hoverDots[si].setAttribute("cx", X(i)); hoverDots[si].setAttribute("cy", Y(v)); hoverDots[si].setAttribute("visibility", "visible");
-        rows.push({ color: s.color, val: yFmt(v), lbl: (s.emoji ? s.emoji + " " : "") + s.label });
+        rows.push({ color: s.color, val: yFmt(v), lbl: s.label });
       });
       tip.textContent = "";
       tip.append(el("div", { class: "tip-date" }, fmtDateWk(dates[i])));
@@ -667,7 +695,6 @@
     svg.addEventListener("pointerleave", hide);
   }
 
-  // Gegroepeerde staafgrafiek. cfg: { dates(groeplabels), series:[{label,color}], matrix[si][gi], yFmt? }
   function drawBars(host, cfg) {
     host.textContent = "";
     const nG = cfg.dates.length, series = cfg.series;
@@ -744,7 +771,11 @@
       const g = Math.max(0, Math.min(nG - 1, Math.floor((e.clientX - rect.left - padL * (rect.width / W)) / (band * (rect.width / W)))));
       showG(g, rect.width);
     });
-    hit.addEventListener("pointerdown", e => { curG = -1; hit.dispatchEvent(new PointerEvent("pointermove", { clientX: e.clientX, bubbles: true })); const rect = svg.getBoundingClientRect(); showG(Math.max(0, Math.min(nG - 1, Math.floor((e.clientX - rect.left - padL * (rect.width / W)) / (band * (rect.width / W))))), rect.width); });
+    hit.addEventListener("pointerdown", e => {
+      const rect = svg.getBoundingClientRect();
+      curG = -1;
+      showG(Math.max(0, Math.min(nG - 1, Math.floor((e.clientX - rect.left - padL * (rect.width / W)) / (band * (rect.width / W))))), rect.width);
+    });
     svg.addEventListener("pointerleave", hideG);
   }
 
@@ -758,30 +789,29 @@
     const Y = v => 3 + (1 - (v - min) / span) * (h - 8);
     const svg = sv("svg", { width: w, height: h, viewBox: `0 0 ${w} ${h}` });
     svg.append(sv("path", { d: pathFrom(values, X, Y), fill: "none", stroke: color, "stroke-width": 1.8, "stroke-linejoin": "round", "stroke-linecap": "round", opacity: .95 }));
-    svg.append(sv("circle", { cx: X(values.length - 1).toFixed(1), cy: Y(values[values.length - 1]).toFixed(1), r: 3, fill: color, stroke: C.card, "stroke-width": 1.5 }));
+    svg.append(sv("circle", { cx: X(values.length - 1).toFixed(1), cy: Y(values[values.length - 1]).toFixed(1), r: 3, fill: color, stroke: C.surface, "stroke-width": 1.5 }));
     host.append(svg);
   }
 
   function legendEl(items) {
     return el("div", { class: "legend" }, items.map(it =>
-      el("span", { class: "leg" }, el("span", { class: "sw" + (it.box ? " box" : ""), style: `background:${it.color}` }), it.label)));
+      el("span", { class: "leg" }, el("span", { class: "k" + (it.box ? " box" : ""), style: `background:${it.color}` }), it.label)));
   }
-  // Grafiekkaart met optionele tabel-tweeling (toegankelijkheid: waarden zonder hover)
-  function chartCard(title, subtitle, legend, drawFn, tableData) {
+  function section(title, subtitle, legend, drawFn, tableData) {
     const host = el("div", { class: "chart-host" });
     const kids = [];
     let tbl = null, btn = null;
     if (tableData) {
       tbl = el("div", { class: "chart-table" }, chartTableEl(tableData));
-      btn = el("button", { class: "btn btn-sm", onclick: () => { tbl.classList.toggle("open"); btn.textContent = tbl.classList.contains("open") ? "📈 grafiek" : "📋 tabel"; } }, "📋 tabel");
+      btn = el("button", { class: "linkbtn", onclick: () => { tbl.classList.toggle("open"); btn.textContent = tbl.classList.contains("open") ? "grafiek" : "tabel"; } }, "tabel");
     }
-    kids.push(el("div", { class: "card-head" }, el("h3", {}, title), btn));
-    if (subtitle) kids.push(el("p", { class: "card-sub" }, subtitle));
+    kids.push(el("div", { class: "sect-head" }, el("h3", {}, title), btn ? el("span", { class: "aside" }, btn) : null));
+    if (subtitle) kids.push(el("p", { class: "sect-sub" }, subtitle));
     if (legend) kids.push(legend);
     kids.push(host);
     if (tbl) kids.push(tbl);
     chartJobs.push(() => { if (host.isConnected) drawFn(host); });
-    return el("section", { class: "card" }, kids);
+    return el("section", { class: "sect" }, kids);
   }
   function chartTableEl({ dates, cols, fmt }) {
     fmt = fmt || fmtInt;
@@ -793,41 +823,37 @@
   }
 
   /* ============================== UI: shared ============================== */
-  function medalChip(team) { return el("span", { class: "chip " + (team === "goud" ? "g" : "z") }, `${MEDAL[team]} ${TEAMNAME[team]}`); }
+  function swatch(team) { return el("span", { class: "sw " + (team === "goud" ? "g" : "z") }); }
+  function teamTag(team) { return el("span", { class: "tag" }, swatch(team), TEAMNAME[team]); }
   function deltaSpan(v, suffix) {
     if (v == null || v === 0) return el("span", { class: "muted small" }, "–");
     return el("span", { class: (v > 0 ? "up" : "down") + " small nowrap" }, `${v > 0 ? "▲" : "▼"} ${fmtC(Math.abs(v))}${suffix || ""}`);
-  }
-
-  function header() {
-    const gv = teamTotal("goud", "views"), zv = teamTotal("zilver", "views");
-    const lead = gv >= zv ? "goud" : "zilver";
-    const ld = lastDate();
-    return el("header", { class: "hdr" },
-      el("h1", {}, "🏆 YouTube Battle"),
-      el("div", { class: "hdr-spacer" }),
-      ALL_DATES.length ? el("span", { class: "leader-chip" }, `👑 ${MEDAL[lead]} ${TEAMNAME[lead]} leidt`) : null,
-      el("div", { class: "sub" },
-        `${TEAMNAME.goud} (${ownerOf("goud")}) vs ${TEAMNAME.zilver} (${ownerOf("zilver")}) · race naar ${fmtC(TARGET)} views`,
-        ld ? ` · laatste update: ${fmtDate(ld)}` : ""));
   }
   function ownerOf(team) {
     const o = teamChannels(team)[0]?.owner || "";
     return o ? o[0].toUpperCase() + o.slice(1) : "?";
   }
 
+  function header() {
+    const first = ALL_DATES[0], last = lastDate();
+    return el("header", { class: "hdr" },
+      el("div", { class: "brand" }, "YouTube ", el("em", {}, "Battle")),
+      el("div", { class: "hdr-meta" },
+        first ? `Dag ${daysBetween(first, last)} · update ${fmtDate(last)}` : "seizoen 2026"));
+  }
+
   function actionsRow() {
     return el("div", { class: "actions" },
       el("button", { class: "btn btn-primary", onclick: () => { state.form = state.form ? null : newFormState(); render(); } },
-        state.form ? "✕ Sluiten" : "➕ Stats invoeren"),
-      el("button", { class: "btn", onclick: exportData }, "⬇️ Export data.json"),
-      el("button", { class: "btn", onclick: () => reload(true) }, "🔄 Herladen"),
-      pending.length ? el("span", { class: "pending-chip" }, `🕐 ${pending.length} lokale ${pending.length === 1 ? "invoer" : "invoeren"} — exporteer & push!`) : null);
+        state.form ? "Sluiten" : "Nieuwe cijfers"),
+      el("button", { class: "btn", onclick: exportData }, "Export data.json"),
+      el("button", { class: "btn", onclick: () => reload(true) }, "Herladen"),
+      pending.length ? el("span", { class: "pending-note" }, `${pending.length} lokale invoer — exporteer en push`) : null);
   }
 
   const TABS = [
-    ["battle", "⚔️ Battle"], ["charts", "📈 Grafieken"], ["channels", "📊 Kanalen"],
-    ["milestones", "🏅 Mijlpalen"], ["history", "📜 Historiek"],
+    ["battle", "Battle"], ["charts", "Grafieken"], ["channels", "Kanalen"],
+    ["milestones", "Mijlpalen"], ["history", "Historiek"],
   ];
   function tabBar() {
     return el("nav", { class: "tabs" }, TABS.map(([id, label]) =>
@@ -855,36 +881,36 @@
     let body;
     if (f.mode === "quick") {
       body = el("div", {},
-        el("div", { class: "qrow", style: "border-top:0;color:var(--muted);font-size:11px" },
-          el("span", {}, "KANAAL"), el("span", {}, "SUBS"), el("span", {}, "VIEWS")),
+        el("div", { class: "qhead" },
+          el("span", { class: "eyebrow" }, "Kanaal"), el("span", { class: "eyebrow" }, "Subs"), el("span", { class: "eyebrow" }, "Views")),
         DB.channels.map(ch => {
           const last = latest(ch.id);
           const row = f.quick[ch.id] || (f.quick[ch.id] = { subs: "", views: "" });
           return el("div", { class: "qrow" },
-            el("span", { class: "qn" }, `${MEDAL[ch.team]} ${ch.name}`,
+            el("span", { class: "qn" }, el("span", {}, swatch(ch.team), " " + ch.name),
               el("small", {}, last ? `nu: ${fmtInt(last.subs)} / ${fmtInt(last.views)}` : "nieuw — nog geen data")),
             el("input", { type: "text", inputmode: "numeric", placeholder: last ? fmtInt(last.subs) : "subs", value: row.subs, oninput: e => { row.subs = e.target.value; } }),
             el("input", { type: "text", inputmode: "numeric", placeholder: last ? fmtInt(last.views) : "views", value: row.views, oninput: e => { row.views = e.target.value; } }));
         }),
-        el("p", { class: "card-sub", style: "margin-top:8px" }, "Laat een kanaal leeg om het over te slaan. Punten mag: 1.234.567 werkt gewoon."));
+        el("p", { class: "sect-sub", style: "margin-top:10px" }, "Laat een kanaal leeg om het over te slaan. Punten mag: 1.234.567 werkt gewoon."));
     } else {
       const s = f.single;
       body = el("div", { class: "frm-grid" },
         el("div", {}, el("label", {}, "Kanaal"),
           el("select", { oninput: e => { s.channelId = e.target.value; render(); } },
-            DB.channels.map(ch => el("option", { value: ch.id, selected: s.channelId === ch.id }, `${MEDAL[ch.team]} ${ch.name}`)))),
+            DB.channels.map(ch => el("option", { value: ch.id, selected: s.channelId === ch.id }, `${ch.name} — ${TEAMNAME[ch.team]}`)))),
         el("div", {}, el("label", {}, "Subscribers"),
           el("input", { type: "text", inputmode: "numeric", placeholder: latest(s.channelId) ? fmtInt(latest(s.channelId).subs) : "1000", value: s.subs, oninput: e => { s.subs = e.target.value; } })),
         el("div", {}, el("label", {}, "Views"),
           el("input", { type: "text", inputmode: "numeric", placeholder: latest(s.channelId) ? fmtInt(latest(s.channelId).views) : "50000", value: s.views, oninput: e => { s.views = e.target.value; } })));
     }
-    return el("section", { class: "card frm" },
-      el("div", { class: "card-head" }, el("h3", {}, "📝 Stats invoeren"), modeSeg),
-      el("div", { class: "frm-grid", style: "margin:10px 0 12px" },
+    return el("section", { class: "panel frm" },
+      el("div", { class: "sect-head", style: "margin-bottom:12px" }, el("h3", {}, "Nieuwe cijfers"), el("span", { class: "aside" }, modeSeg)),
+      el("div", { class: "frm-grid", style: "margin:0 0 14px" },
         el("div", {}, el("label", {}, "Datum"), dateInput)),
       body,
       el("div", { class: "form-foot" },
-        el("button", { class: "btn btn-primary", onclick: saveForm }, "💾 Opslaan"),
+        el("button", { class: "btn btn-primary", onclick: saveForm }, "Opslaan"),
         el("button", { class: "btn", onclick: () => { state.form = null; render(); } }, "Annuleren")));
   }
   function saveForm() {
@@ -913,7 +939,7 @@
       const l = latest(ch.id);
       return l && l.date < f.date && (views < l.views || subs < l.subs);
     });
-    if (drops.length && !confirm(`⚠️ Bij ${drops.map(d => d.ch.name).join(", ")} is de nieuwe waarde lager dan de vorige. Typfout? Klik OK om toch op te slaan.`)) return;
+    if (drops.length && !confirm(`Let op: bij ${drops.map(d => d.ch.name).join(", ")} is de nieuwe waarde lager dan de vorige. Typfout? Klik OK om toch op te slaan.`)) return;
     const ts = Date.parse(f.date + "T00:00:00Z");
     const now = Date.now();
     const entries = rows.map(({ ch, subs, views }, i) => ({ id: now + i, channelId: ch.id, subs, views, date: f.date, timestamp: ts }));
@@ -922,7 +948,7 @@
     mergeStats();
     state.form = null;
     render();
-    toast(`✅ ${entries.length} ${entries.length === 1 ? "invoer" : "invoeren"} opgeslagen — klik straks "Export data.json" en push naar GitHub`);
+    toast(`${entries.length} ${entries.length === 1 ? "invoer" : "invoeren"} opgeslagen — klik straks "Export data.json" en push naar GitHub`);
   }
   function deletePending(id) {
     if (!confirm("Deze lokale invoer verwijderen?")) return;
@@ -938,13 +964,13 @@
     const a = el("a", { href: url, download: "data.json" });
     document.body.append(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-    toast("⬇️ data.json gedownload — vervang dashboard/data.json in GitHub en push");
+    toast("data.json gedownload — vervang dashboard/data.json in GitHub en push");
   }
   async function reload(manual) {
     document.getElementById("app").style.opacity = ".55";
     try {
       await loadData();
-      if (manual) toast("🔄 Nieuwste data geladen");
+      if (manual) toast("Nieuwste data geladen");
     } catch (e) {
       state.err = "Kon data.json niet laden (" + e.message + ").";
     }
@@ -953,68 +979,87 @@
   }
 
   /* ============================== UI: battle tab ========================== */
-  function shareBar(label, gv, zv, slim) {
+  function possBar(label, gv, zv, slim) {
     const total = gv + zv;
     const gp = total > 0 ? (gv / total) * 100 : 50;
-    return el("div", { class: "share" },
-      el("div", { class: "share-head" },
-        el("span", {}, `${MEDAL.goud} `, el("b", {}, fmtC(gv))),
-        el("span", { class: "muted" }, label),
-        el("span", {}, el("b", {}, fmtC(zv)), ` ${MEDAL.zilver}`)),
-      el("div", { class: "share-track" + (slim ? " slim" : "") },
-        el("div", { class: "seg g", style: `width:${gp}%` }, !slim && gp > 14 ? gp.toFixed(1) + "%" : ""),
-        el("div", { class: "seg z", style: `width:${100 - gp}%` }, !slim && (100 - gp) > 14 ? (100 - gp).toFixed(1) + "%" : "")));
+    const gSeg = el("div", { class: "poss-g", style: `width:${heroAnimated || REDUCED ? gp : 50}%` });
+    const zSeg = el("div", { class: "poss-z", style: `width:${heroAnimated || REDUCED ? 100 - gp : 50}%` });
+    if (!heroAnimated && !REDUCED) requestAnimationFrame(() => requestAnimationFrame(() => {
+      gSeg.style.width = gp + "%"; zSeg.style.width = (100 - gp) + "%";
+    }));
+    return el("div", { class: "poss" },
+      el("div", { class: "poss-track" + (slim ? " slim" : "") }, gSeg, zSeg),
+      el("div", { class: "poss-foot" },
+        el("span", {}, el("b", {}, gp.toFixed(1) + "%"), ` · ${fmtC(gv)}`),
+        el("span", {}, label),
+        el("span", {}, `${fmtC(zv)} · `, el("b", {}, (100 - gp).toFixed(1) + "%"))));
   }
-  function scoreboard() {
+  function scorebug() {
     const gv = teamTotal("goud", "views"), zv = teamTotal("zilver", "views");
     const gs = teamTotal("goud", "subs"), zs = teamTotal("zilver", "subs");
     const lead = gv >= zv ? "goud" : "zilver";
-    const side = (team, views, subs) => el("div", { class: "side " + team },
-      lead === team ? el("div", { class: "crown" + (team === "zilver" ? " s" : "") }, "👑 AAN DE LEIDING") : null,
-      el("div", { class: "tname" }, `${MEDAL[team]} TEAM ${TEAMNAME[team].toUpperCase()}`),
-      el("div", { class: "owner" }, `${ownerOf(team)} · ${teamChannels(team).length} kanalen`),
-      el("div", { class: "big" }, fmtC(views)),
-      el("div", { class: "unit" }, "views"),
-      el("div", { class: "subrow" }, `${fmtC(subs)} subs`));
+    const side = (team, views, subs, right) => {
+      const score = el("div", { class: "bug-score" }, fmtC(views));
+      chartJobs.push(() => { if (heroAnimated) score.textContent = fmtC(views); else countUp(score, views, fmtC); });
+      return el("div", { class: "bug-side" + (right ? " r" : "") },
+        el("div", { class: "lead-slot" }, lead === team ? el("span", { class: "lead-tag" + (team === "zilver" ? " z" : "") }, "Aan de leiding") : null),
+        el("div", { class: "bug-team " + (team === "goud" ? "g" : "z") }, "Team " + TEAMNAME[team]),
+        el("div", { class: "bug-owner" }, `${ownerOf(team)} · ${teamChannels(team).length} kanalen`),
+        score,
+        el("div", { class: "bug-subs" }, `${fmtC(subs)} subs`));
+    };
     const hl = headline();
-    return el("section", { class: "card" },
-      el("div", { class: "score" }, side("goud", gv, gs), el("div", { class: "vs" }, "VS"), side("zilver", zv, zs)),
-      shareBar("Views", gv, zv, false),
-      shareBar("Subs", gs, zs, true),
-      hl ? el("p", { style: "margin:12px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5" }, hl) : null);
+    const node = el("section", { class: "bug" },
+      el("div", { class: "bug-grid" },
+        side("goud", gv, gs, false),
+        el("div", { class: "bug-vs" }, "VS"),
+        side("zilver", zv, zs, true)),
+      possBar("Views", gv, zv, false),
+      possBar("Subs", gs, zs, true),
+      hl ? el("p", { class: "bug-line" }, hl) : null);
+    chartJobs.push(() => { heroAnimated = true; });
+    return node;
   }
-  function kpiRow() {
+  function kpiStrip() {
     const gv = teamTotal("goud", "views"), zv = teamTotal("zilver", "views");
     const gr = teamRate("goud", "views"), zr = teamRate("zilver", "views");
     const totRate = (gr || 0) + (zr || 0);
     const first = ALL_DATES[0], last = lastDate();
     const momTeam = (gr || 0) >= (zr || 0) ? "goud" : "zilver";
-    const tiles = [
-      { lbl: "Totaal views (samen)", val: fmtC(gv + zv), sub: totRate ? el("span", { class: "up" }, `+${fmtC(totRate)}/dag`) : "–" },
-      { lbl: "Voorsprong", val: fmtC(Math.abs(gv - zv)), sub: `${MEDAL[gv >= zv ? "goud" : "zilver"]} ${TEAMNAME[gv >= zv ? "goud" : "zilver"]} staat voor` },
-      { lbl: "Momentum (14 d)", val: `${MEDAL[momTeam]} +${fmtC(Math.max(gr || 0, zr || 0))}`, sub: `per dag · ander team +${fmtC(Math.min(gr || 0, zr || 0))}/dag` },
-      { lbl: "Battle loopt al", val: first ? daysBetween(first, last) + " dagen" : "–", sub: first ? `sinds ${fmtDate(first)} · ${ALL_DATES.length} updates` : "" },
+    const cells = [
+      { lbl: "Totaal views samen", val: fmtC(gv + zv), sub: totRate ? el("span", { class: "up" }, `+${fmtC(totRate)} per dag`) : "–" },
+      { lbl: "Voorsprong", val: fmtC(Math.abs(gv - zv)), sub: `${TEAMNAME[gv >= zv ? "goud" : "zilver"]} staat voor` },
+      { lbl: "Momentum 14 dagen", val: `+${fmtC(Math.max(gr || 0, zr || 0))}`, sub: `${TEAMNAME[momTeam]} · ander team +${fmtC(Math.min(gr || 0, zr || 0))}/dag` },
+      { lbl: "Verloop", val: first ? `Dag ${daysBetween(first, last)}` : "–", sub: first ? `sinds ${fmtDate(first)} · ${ALL_DATES.length} updates` : "" },
     ];
-    return el("div", { class: "kpis" }, tiles.map(t => el("div", { class: "kpi" },
-      el("div", { class: "lbl" }, t.lbl), el("div", { class: "val" }, t.val), el("div", { class: "sub" }, t.sub))));
+    return el("div", { class: "strip" }, cells.map(c => el("div", { class: "cell" },
+      el("div", { class: "lbl" }, c.lbl), el("div", { class: "val" }, c.val), el("div", { class: "sub" }, c.sub))));
   }
   function teamSeriesValues(team, metric, dates) { return dates.map(d => teamTotal(team, metric, d)); }
-  function teamCard(team) {
-    const chans = teamChannels(team).map(c => ({ c, l: latest(c.id), p: prevSnap(c.id) }))
-      .sort((a, b) => (b.l?.views || 0) - (a.l?.views || 0));
-    return el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, `${MEDAL[team]} Team ${TEAMNAME[team]}`),
-        el("span", { class: "muted small" }, ownerOf(team))),
-      chans.map(({ c, l, p }) => {
-        const sparkHost = el("div", { class: "spark", style: "width:76px" });
-        chartJobs.push(() => { if (sparkHost.isConnected) drawSpark(sparkHost, snapsOf(c.id).map(s => s.views), team === "goud" ? C.gold : C.silver, 30); });
-        return el("div", { class: "trow" },
-          el("span", { class: "nm" }, c.name, !l ? el("span", { class: "chip new", style: "margin-left:6px" }, "✨ nieuw") : null),
-          sparkHost,
-          el("span", { class: "vals" },
-            el("div", { class: "v" }, l ? fmtC(l.views) : "–", el("span", { class: "muted small" }, " views"), " ", l && p ? deltaSpan(l.views - p.views) : null),
-            el("div", { class: "s" }, l ? fmtC(l.subs) + " subs" : "nog geen data")));
-      }));
+  function teamsSection() {
+    const col = team => {
+      const chans = teamChannels(team).map(c => ({ c, l: latest(c.id), p: prevSnap(c.id) }))
+        .sort((a, b) => (b.l?.views || 0) - (a.l?.views || 0));
+      return el("div", {},
+        el("div", { class: "team-head" },
+          el("span", { class: "t", style: `color:var(--${team === "goud" ? "gold" : "silver"}-ui)` }, "Team " + TEAMNAME[team]),
+          el("span", { class: "o" }, ownerOf(team))),
+        chans.map(({ c, l, p }) => {
+          const sparkHost = el("div", { class: "spark", style: "width:72px" });
+          chartJobs.push(() => { if (sparkHost.isConnected) drawSpark(sparkHost, snapsOf(c.id).map(s => s.views), team === "goud" ? C.gold : C.silver, 28); });
+          return el("div", { class: "row" },
+            el("div", { class: "row-main" },
+              el("div", { class: "row-name" }, c.name, !l ? el("span", { class: "newmark" }, "nieuw") : null),
+              el("div", { class: "small muted" }, l ? `${fmtC(l.subs)} subs` : "nog geen data")),
+            sparkHost,
+            el("div", { class: "row-nums" },
+              el("div", { class: "v" }, l ? fmtC(l.views) : "–"),
+              el("div", { class: "s" }, l && p ? deltaSpan(l.views - p.views) : "–")));
+        }));
+    };
+    return el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, "De teams")),
+      el("div", { class: "teams" }, col("goud"), col("zilver")));
   }
   function viewBattle() {
     const dates = ALL_DATES;
@@ -1022,25 +1067,25 @@
     const zVals = teamSeriesValues("zilver", "views", dates);
     const diff = diffSeries("views", dates);
     return [
-      scoreboard(),
-      kpiRow(),
-      chartCard("📈 Team views over tijd", null,
-        legendEl([{ color: C.gold, label: "🥇 Goud" }, { color: C.silver, label: "🥈 Zilver" }]),
+      scorebug(),
+      kpiStrip(),
+      section("Team views over tijd", null,
+        legendEl([{ color: C.gold, label: "Goud" }, { color: C.silver, label: "Zilver" }]),
         host => drawLine(host, {
           dates, endLabels: true, area: true,
           series: [
-            { label: "Goud", emoji: "🥇", color: C.gold, values: gVals },
-            { label: "Zilver", emoji: "🥈", color: C.silver, values: zVals },
+            { label: "Goud", color: C.gold, values: gVals },
+            { label: "Zilver", color: C.silver, values: zVals },
           ],
         }),
-        { dates, cols: [{ label: "🥇 Goud", values: gVals }, { label: "🥈 Zilver", values: zVals }] }),
-      chartCard("⚖️ Voorsprong over tijd", "Boven de nullijn = Goud leidt · onder = Zilver leidt", null,
+        { dates, cols: [{ label: "Goud", values: gVals }, { label: "Zilver", values: zVals }] }),
+      section("Voorsprong over tijd", "Boven de nullijn leidt Goud, eronder Zilver.", null,
         host => drawLine(host, {
           dates, showZero: true, diverging: true, endLabels: true,
-          series: [{ label: "Voorsprong (views)", color: "#9aa5bd", values: diff }],
+          series: [{ label: "Voorsprong in views", color: "#93a0b8", values: diff }],
         }),
         { dates, cols: [{ label: "Voorsprong (views)", values: diff }] }),
-      el("div", { class: "grid-2" }, teamCard("goud"), teamCard("zilver")),
+      teamsSection(),
     ];
   }
 
@@ -1049,7 +1094,8 @@
     const seg = (opts, cur, set) => el("div", { class: "segc" },
       opts.map(([v, label]) => el("button", { class: cur === v ? "on" : "", onclick: () => { set(v); render(); } }, label)));
     return el("div", { class: "filters" },
-      seg([["views", "👀 Views"], ["subs", "👥 Subs"]], state.metric, v => state.metric = v),
+      seg([["views", "Views"], ["subs", "Subs"]], state.metric, v => state.metric = v),
+      el("span", { class: "sep" }),
       seg([["all", "Alles"], ["30", "30 dagen"], ["14", "14 dagen"]], state.range, v => state.range = v));
   }
   function viewCharts() {
@@ -1070,34 +1116,34 @@
     const gGrowth = growth("goud"), zGrowth = growth("zilver");
     return [
       filtersRow(),
-      chartCard(`📈 Team ${mLabel} over tijd`, null,
-        legendEl([{ color: C.gold, label: "🥇 Goud" }, { color: C.silver, label: "🥈 Zilver" }]),
+      section(`Team ${mLabel} over tijd`, null,
+        legendEl([{ color: C.gold, label: "Goud" }, { color: C.silver, label: "Zilver" }]),
         host => drawLine(host, {
           dates, endLabels: true, area: true,
           series: [
-            { label: "Goud", emoji: "🥇", color: C.gold, values: gVals },
-            { label: "Zilver", emoji: "🥈", color: C.silver, values: zVals },
+            { label: "Goud", color: C.gold, values: gVals },
+            { label: "Zilver", color: C.silver, values: zVals },
           ],
         }),
-        { dates, cols: [{ label: "🥇 Goud", values: gVals }, { label: "🥈 Zilver", values: zVals }] }),
-      chartCard(`🔥 Groei per dag (${mLabel})`, "Gemiddelde groei per dag tussen twee opeenvolgende updates",
-        legendEl([{ color: C.gold, label: "🥇 Goud", box: true }, { color: C.silver, label: "🥈 Zilver", box: true }]),
+        { dates, cols: [{ label: "Goud", values: gVals }, { label: "Zilver", values: zVals }] }),
+      section(`Groei per dag — ${mLabel}`, "Gemiddelde groei per dag tussen twee opeenvolgende updates.",
+        legendEl([{ color: C.gold, label: "Goud", box: true }, { color: C.silver, label: "Zilver", box: true }]),
         host => drawBars(host, {
           dates: growthDates,
           series: [{ label: "Goud", color: C.gold }, { label: "Zilver", color: C.silver }],
           matrix: [gGrowth, zGrowth],
         }),
-        { dates: growthDates, cols: [{ label: "🥇 Goud /dag", values: gGrowth }, { label: "🥈 Zilver /dag", values: zGrowth }] }),
-      chartCard(`⚖️ Voorsprong (${mLabel})`, "Boven de nullijn = Goud leidt · onder = Zilver leidt", null,
+        { dates: growthDates, cols: [{ label: "Goud /dag", values: gGrowth }, { label: "Zilver /dag", values: zGrowth }] }),
+      section(`Voorsprong — ${mLabel}`, "Boven de nullijn leidt Goud, eronder Zilver.", null,
         host => drawLine(host, {
           dates, showZero: true, diverging: true, endLabels: true,
-          series: [{ label: `Voorsprong (${mLabel})`, color: "#9aa5bd", values: diff }],
+          series: [{ label: `Voorsprong in ${mLabel}`, color: "#93a0b8", values: diff }],
         }),
         { dates, cols: [{ label: `Voorsprong (${mLabel})`, values: diff }] }),
-      leaderboardCard(metric),
+      leaderboardSection(metric),
     ];
   }
-  function leaderboardCard(metric) {
+  function leaderboardSection(metric) {
     const last = lastDate();
     const prevDate = ALL_DATES[ALL_DATES.length - 2];
     const rows = DB.channels.map(c => ({
@@ -1106,18 +1152,17 @@
     })).sort((a, b) => b.v - a.v);
     const prevRank = new Map([...rows].sort((a, b) => b.pv - a.pv).map((r, i) => [r.c.id, i]));
     const maxV = rows[0]?.v || 1;
-    const medals = ["🥇", "🥈", "🥉"];
-    return el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, `🏆 Leaderboard — ${metric === "views" ? "views" : "subs"}`)),
+    return el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, `Leaderboard — ${metric === "views" ? "views" : "subs"}`)),
       rows.map((r, i) => {
         const move = (prevRank.get(r.c.id) ?? i) - i;
-        return el("div", { class: "lb-row" + (i < 3 ? " top" : "") },
-          el("span", { class: "lb-rank" }, i < 3 ? medals[i] : i + 1),
-          el("div", { class: "lb-main" },
-            el("div", { class: "lb-name" }, r.c.name, medalChip(r.c.team),
+        return el("div", { class: "row" },
+          el("span", { class: "rank" + (i < 3 ? ` m${i + 1}` : "") }, i + 1),
+          el("div", { class: "row-main" },
+            el("div", { class: "row-name" }, r.c.name, teamTag(r.c.team),
               move !== 0 ? el("span", { class: "rankmove " + (move > 0 ? "up" : "down") }, move > 0 ? `▲${move}` : `▼${-move}`) : null),
-            el("div", { class: "lb-bar" }, el("div", { class: "lb-fill", style: `width:${(r.v / maxV * 100).toFixed(1)}%;background:${r.c.team === "goud" ? C.gold : C.silver}` }))),
-          el("div", { class: "lb-nums" },
+            el("div", { class: "row-bar" }, el("div", { class: "row-fill", style: `width:${(r.v / maxV * 100).toFixed(1)}%;background:${r.c.team === "goud" ? C.gold : C.silver}` }))),
+          el("div", { class: "row-nums" },
             el("div", { class: "v" }, fmtC(r.v)),
             el("div", { class: "s" }, r.v !== r.pv ? fmtSign(r.v - r.pv) + " sinds vorige" : "–")));
       }));
@@ -1125,29 +1170,29 @@
 
   /* ============================== UI: kanalen tab ========================= */
   function viewChannels() {
-    return [raceCard(), minisCard(), headToHeadCard()];
+    return [raceSection(), minisSection(), headToHeadSection()];
   }
-  function raceCard() {
+  function raceSection() {
     const last = lastDate();
     const rows = DB.channels.map(c => {
       const v = valueAt(c.id, last, "views") || 0;
       const rate = ratePerDay(c.id, "views");
       const remaining = TARGET - v;
       let eta = null;
-      if (v >= TARGET) eta = "🎉 GEMONETISEERD!";
+      if (v >= TARGET) eta = "Gemonetiseerd! 🎉";
       else if (rate && rate > 0) {
         const days = remaining / rate;
         const etaIso = isoAddDays(last, Math.ceil(days));
-        eta = days > 3650 ? "≈ >10 jaar 😅" : `≈ nog ${fmtInt(Math.ceil(days))} dagen (${days > 300 ? fmtDateY(etaIso) : fmtDate(etaIso)})`;
+        eta = days > 3650 ? "meer dan 10 jaar te gaan" : `nog ± ${fmtInt(Math.ceil(days))} dagen (${days > 300 ? fmtDateY(etaIso) : fmtDate(etaIso)})`;
       }
       return { c, v, rate, eta };
     }).sort((a, b) => b.v - a.v);
-    return el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, `🏁 Race naar ${fmtC(TARGET)} views`)),
-      el("p", { class: "card-sub" }, "Monetisatie-doel per kanaal, met schatting op basis van de groei van de laatste 14 dagen."),
-      rows.map(({ c, v, rate, eta }) => el("div", { class: "race-row" },
+    return el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, `Race naar ${fmtC(TARGET)} views`)),
+      el("p", { class: "sect-sub" }, "Monetisatie-doel per kanaal, met een schatting op basis van de groei in de laatste 14 dagen."),
+      rows.map(({ c, v, rate, eta }) => el("div", { class: "race-item" },
         el("div", { class: "race-top" },
-          el("span", { class: "nm" }, `${MEDAL[c.team]} ${c.name}`),
+          el("span", { class: "row-name" }, c.name, teamTag(c.team)),
           el("span", { class: "v" }, `${fmtC(v)} / ${fmtC(TARGET)}`)),
         el("div", { class: "meter " + (c.team === "goud" ? "g" : "z") },
           el("div", { class: "meter-fill", style: `width:${Math.min(100, v / TARGET * 100).toFixed(2)}%;background:${c.team === "goud" ? C.gold : C.silver}` })),
@@ -1156,33 +1201,32 @@
           el("span", {}, eta || (rate == null ? "nog te weinig data voor een schatting" : "–")),
           el("span", {}, rate ? `+${fmtC(rate)}/dag` : "")))));
   }
-  function minisCard() {
+  function minisSection() {
     const minis = DB.channels.map(c => {
       const snaps = snapsOf(c.id);
       const l = latest(c.id), p = prevSnap(c.id);
       const sparkHost = el("div", { class: "sp" });
-      chartJobs.push(() => { if (sparkHost.isConnected) drawSpark(sparkHost, snaps.map(s => s.views), c.team === "goud" ? C.gold : C.silver, 40); });
+      chartJobs.push(() => { if (sparkHost.isConnected) drawSpark(sparkHost, snaps.map(s => s.views), c.team === "goud" ? C.gold : C.silver, 38); });
       return el("div", { class: "mini" },
-        el("div", { class: "nm" }, `${MEDAL[c.team]} ${c.name}`),
+        el("div", { class: "nm" }, swatch(c.team), c.name),
         el("div", { class: "v" }, l ? fmtC(l.views) : "–"),
         el("div", { class: "d" }, l && p ? deltaSpan(l.views - p.views, " views") : el("span", { class: "muted" }, l ? `${fmtC(l.subs)} subs` : "—")),
         sparkHost);
     });
-    return el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, "📊 Alle kanalen — views") ),
-      el("p", { class: "card-sub" }, "Eén mini-grafiek per kanaal (zelfde kleur = zelfde team), zo blijft alles leesbaar."),
+    return el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, "Alle kanalen — views")),
+      el("p", { class: "sect-sub" }, "Eén mini-grafiek per kanaal; de kleur is de teamkleur."),
       el("div", { class: "minis" }, minis));
   }
-  function headToHeadCard() {
-    const selects = el("div", { class: "filters", style: "margin-bottom:8px" },
-      el("div", { class: "segc", style: "padding:0;border:0;background:none;gap:8px" },
-        el("select", { class: "btn", style: "max-width:46vw", oninput: e => { state.cmpA = e.target.value; render(); } },
-          DB.channels.map(c => el("option", { value: c.id, selected: c.id === state.cmpA }, `${MEDAL[c.team]} ${c.name}`))),
-        el("span", { class: "muted", style: "align-self:center;font-weight:700" }, "vs"),
-        el("select", { class: "btn", style: "max-width:46vw", oninput: e => { state.cmpB = e.target.value; render(); } },
-          DB.channels.map(c => el("option", { value: c.id, selected: c.id === state.cmpB }, `${MEDAL[c.team]} ${c.name}`)))));
+  function headToHeadSection() {
+    const selects = el("div", { class: "filters", style: "margin-bottom:12px;gap:10px" },
+      el("select", { class: "btn", style: "max-width:44vw", oninput: e => { state.cmpA = e.target.value; render(); } },
+        DB.channels.map(c => el("option", { value: c.id, selected: c.id === state.cmpA }, `${c.name} — ${TEAMNAME[c.team]}`))),
+      el("span", { class: "eyebrow" }, "vs"),
+      el("select", { class: "btn", style: "max-width:44vw", oninput: e => { state.cmpB = e.target.value; render(); } },
+        DB.channels.map(c => el("option", { value: c.id, selected: c.id === state.cmpB }, `${c.name} — ${TEAMNAME[c.team]}`))));
     const A = channelOf(state.cmpA), B = channelOf(state.cmpB);
-    if (!A || !B) return el("section", { class: "card" }, el("h3", {}, "🤜🤛 Head-to-head"), selects);
+    if (!A || !B) return el("section", { class: "sect" }, el("div", { class: "sect-head" }, el("h3", {}, "Head-to-head")), selects);
     const same = A.id === B.id;
     const firstA = snapsOf(A.id)[0]?.date, firstB = snapsOf(B.id)[0]?.date;
     const start = [firstA, firstB].filter(Boolean).sort()[0];
@@ -1193,19 +1237,19 @@
     const rA = ratePerDay(A.id, "views"), rB = ratePerDay(B.id, "views");
     let verdict = null;
     if (!same && vA != null && vB != null && rA != null && rB != null) {
-      const [lead, trail] = vA >= vB ? [{ c: A, v: vA, r: rA }, { c: B, v: vB, r: rB }] : [{ c: B, v: vB, r: rB }, { c: A, v: vA, r: rA }];
-      if (trail.r > lead.r) {
-        const days = (lead.v - trail.v) / (trail.r - lead.r);
-        verdict = days < 3650 ? `🔮 ${trail.c.name} groeit sneller en haalt ${lead.c.name} bij dit tempo in rond ${fmtDateWk(isoAddDays(lastDate(), Math.ceil(days)))}.`
-          : `🐢 ${trail.c.name} groeit iets sneller, maar inhalen duurt nog jaren.`;
+      const [leadC, trailC] = vA >= vB ? [{ c: A, v: vA, r: rA }, { c: B, v: vB, r: rB }] : [{ c: B, v: vB, r: rB }, { c: A, v: vA, r: rA }];
+      if (trailC.r > leadC.r) {
+        const days = (leadC.v - trailC.v) / (trailC.r - leadC.r);
+        verdict = days < 3650 ? `${trailC.c.name} groeit sneller en haalt ${leadC.c.name} bij dit tempo in rond ${fmtDateWk(isoAddDays(lastDate(), Math.ceil(days)))}.`
+          : `${trailC.c.name} groeit iets sneller, maar inhalen duurt nog jaren.`;
       } else {
-        verdict = `📈 ${lead.c.name} leidt én groeit sneller — het gat wordt groter.`;
+        verdict = `${leadC.c.name} leidt én groeit sneller — het gat wordt groter.`;
       }
     }
-    const statRow = (ch, v, r, color) => el("div", { class: "kpi", style: `border-top:3px solid ${color}` },
-      el("div", { class: "lbl" }, `${MEDAL[ch.team]} ${ch.name}`),
+    const statCell = (ch, v, r, color) => el("div", { class: "cell" },
+      el("div", { class: "lbl", style: `border-bottom:2px solid ${color};display:inline-block;padding-bottom:2px` }, ch.name),
       el("div", { class: "val" }, v == null ? "–" : fmtC(v)),
-      el("div", { class: "sub" }, r != null ? `+${fmtC(r)}/dag (14 d)` : "nog geen groeidata"));
+      el("div", { class: "sub" }, r != null ? `+${fmtC(r)} per dag (14 d)` : "nog geen groeidata"));
     const host = el("div", { class: "chart-host" });
     chartJobs.push(() => {
       if (!host.isConnected) return;
@@ -1217,15 +1261,15 @@
         ],
       });
     });
-    return el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, "🤜🤛 Head-to-head")),
-      el("p", { class: "card-sub" }, "Kies twee kanalen en vergelijk hun views-race."),
+    return el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, "Head-to-head")),
+      el("p", { class: "sect-sub" }, "Kies twee kanalen en vergelijk hun views-race."),
       selects,
-      same ? el("p", { class: "chart-empty" }, "Kies twee verschillende kanalen 😉") : [
-        el("div", { class: "kpis", style: "grid-template-columns:1fr 1fr" }, statRow(A, vA, rA, C.blue), statRow(B, vB, rB, C.red)),
+      same ? el("p", { class: "chart-empty" }, "Kies twee verschillende kanalen.") : [
+        el("div", { class: "strip", style: "grid-template-columns:1fr 1fr;margin:14px 0" }, statCell(A, vA, rA, C.blue), statCell(B, vB, rB, C.red)),
         legendEl([{ color: C.blue, label: A.name }, { color: C.red, label: B.name }]),
         host,
-        verdict ? el("p", { style: "font-size:13.5px;color:var(--ink-2);margin:10px 0 0" }, verdict) : null,
+        verdict ? el("p", { class: "sect-sub", style: "margin-top:12px" }, verdict) : null,
       ]);
   }
 
@@ -1234,34 +1278,36 @@
     const { jump, fast, first1m, streak, flips } = records();
     const ms = milestones();
     const shown = state.msAll ? ms : ms.slice(0, 15);
-    const recTiles = el("div", { class: "recs" },
-      el("div", { class: "rec" }, el("div", { class: "t" }, "🚀 Grootste sprong in één update"),
-        el("div", { class: "v" }, jump ? `+${fmtC(jump.delta)} views` : "–"),
-        el("div", { class: "s" }, jump ? `${jump.ch.name} · ${fmtDate(jump.date)} (≈ +${fmtC(jump.delta / jump.days)}/dag)` : "")),
-      el("div", { class: "rec" }, el("div", { class: "t" }, "🔥 Snelste groeier nu (14 d)"),
-        el("div", { class: "v" }, fast ? `+${fmtC(fast.rate)}/dag` : "–"),
-        el("div", { class: "s" }, fast ? `${MEDAL[fast.ch.team]} ${fast.ch.name}` : "")),
-      el("div", { class: "rec" }, el("div", { class: "t" }, "🏁 Eerste naar 1M views"),
-        el("div", { class: "v" }, first1m ? first1m.ch.name : "nog niemand"),
-        el("div", { class: "s" }, first1m ? `${MEDAL[first1m.ch.team]} op ${fmtDate(first1m.date)}` : "")),
-      el("div", { class: "rec" }, el("div", { class: "t" }, "👑 Huidige leiding"),
-        el("div", { class: "v" }, streak ? `${MEDAL[streak.team]} ${TEAMNAME[streak.team]} — ${streak.days} dagen` : "–"),
-        el("div", { class: "s" }, streak ? `onafgebroken sinds ${fmtDate(streak.since)}` : "")));
-    const flipRows = flips.map((f, i) => el("div", { class: "ms-row" },
-      el("span", { class: "d" }, fmtDate(f.date)),
-      el("span", {}, i === 0 ? `🚦 Start — ${MEDAL[f.team]} ${TEAMNAME[f.team]} pakt als eerste de leiding` : `👑 ${MEDAL[f.team]} ${TEAMNAME[f.team]} neemt de leiding over!`)));
+    const recStrip = el("div", { class: "strip" },
+      el("div", { class: "cell" }, el("div", { class: "lbl" }, "Grootste sprong"),
+        el("div", { class: "val" }, jump ? `+${fmtC(jump.delta)}` : "–"),
+        el("div", { class: "sub" }, jump ? `${jump.ch.name} · ${fmtDate(jump.date)} (± +${fmtC(jump.delta / jump.days)}/dag)` : "")),
+      el("div", { class: "cell" }, el("div", { class: "lbl" }, "Snelste groeier nu"),
+        el("div", { class: "val" }, fast ? `+${fmtC(fast.rate)}/dag` : "–"),
+        el("div", { class: "sub" }, fast ? fast.ch.name : "")),
+      el("div", { class: "cell" }, el("div", { class: "lbl" }, "Eerste naar 1M views"),
+        el("div", { class: "val" }, first1m ? first1m.ch.name : "nog niemand"),
+        el("div", { class: "sub" }, first1m ? `op ${fmtDate(first1m.date)}` : "")),
+      el("div", { class: "cell" }, el("div", { class: "lbl" }, "Huidige leiding"),
+        el("div", { class: "val" }, streak ? `${TEAMNAME[streak.team]} — ${streak.days} d` : "–"),
+        el("div", { class: "sub" }, streak ? `onafgebroken sinds ${fmtDate(streak.since)}` : "")));
+    const flipRows = flips.map((f, i) => el("div", { class: "feed-row" },
+      el("span", { class: "feed-date" }, fmtDate(f.date)),
+      el("span", { class: "feed-tag" }, teamTag(f.team)),
+      el("span", {}, i === 0 ? `Start — ${TEAMNAME[f.team]} pakt als eerste de leiding` : `${TEAMNAME[f.team]} neemt de leiding over`)));
     return [
-      el("section", { class: "card" },
-        el("div", { class: "card-head" }, el("h3", {}, "🏅 Records")), recTiles),
-      el("section", { class: "card" },
-        el("div", { class: "card-head" }, el("h3", {}, "👑 Leiderschap") ),
+      el("section", { class: "sect" },
+        el("div", { class: "sect-head" }, el("h3", {}, "Records")), recStrip),
+      el("section", { class: "sect" },
+        el("div", { class: "sect-head" }, el("h3", {}, "Leiderschap")),
         flips.length ? flipRows : el("p", { class: "chart-empty" }, "Nog geen data.")),
-      el("section", { class: "card" },
-        el("div", { class: "card-head" }, el("h3", {}, "🎯 Mijlpalen"),
-          ms.length > 15 ? el("button", { class: "btn btn-sm", onclick: () => { state.msAll = !state.msAll; render(); } }, state.msAll ? "minder" : `alles (${ms.length})`) : null),
-        shown.length ? shown.map(m => el("div", { class: "ms-row" },
-          el("span", { class: "d" }, fmtDate(m.date)),
-          el("span", {}, `${m.emoji} `, m.text, " ", medalChip(m.team)))) : el("p", { class: "chart-empty" }, "Nog geen mijlpalen.")),
+      el("section", { class: "sect" },
+        el("div", { class: "sect-head" }, el("h3", {}, "Mijlpalen"),
+          ms.length > 15 ? el("span", { class: "aside" }, el("button", { class: "linkbtn", onclick: () => { state.msAll = !state.msAll; render(); } }, state.msAll ? "minder" : `alles (${ms.length})`)) : null),
+        shown.length ? shown.map(m => el("div", { class: "feed-row" },
+          el("span", { class: "feed-date" }, fmtDate(m.date)),
+          el("span", { class: "feed-tag" }, teamTag(m.team)),
+          el("span", {}, m.text))) : el("p", { class: "chart-empty" }, "Nog geen mijlpalen.")),
     ];
   }
 
@@ -1274,28 +1320,32 @@
       byDate.get(s.date).push({ chId, ...s });
     }
     const dates = [...byDate.keys()].sort().reverse();
-    const pendingCard = pending.length ? el("section", { class: "card" },
-      el("div", { class: "card-head" }, el("h3", {}, "🕐 Lokale invoer — nog niet gepusht")),
-      el("p", { class: "card-sub" }, "Deze staan alleen op dit toestel. Klik \"Export data.json\", vervang het bestand in GitHub en push — daarna verdwijnen ze hier vanzelf."),
+    const pendingSect = pending.length ? el("section", { class: "sect" },
+      el("div", { class: "sect-head" }, el("h3", {}, "Lokale invoer — nog niet gepusht")),
+      el("p", { class: "sect-sub" }, "Deze staan alleen op dit toestel. Klik \"Export data.json\", vervang het bestand in GitHub en push — daarna verdwijnen ze hier vanzelf."),
       pending.map(p => {
         const ch = channelOf(p.channelId);
-        return el("div", { class: "trow" },
-          el("span", { class: "nm" }, `${ch ? MEDAL[ch.team] + " " + ch.name : p.channelId}`, el("span", { class: "muted small" }, ` · ${fmtDate(p.date)}`)),
-          el("span", { class: "vals" }, el("div", { class: "v" }, `${fmtInt(p.views)} views`), el("div", { class: "s" }, `${fmtInt(p.subs)} subs`)),
-          el("button", { class: "btn btn-sm", onclick: () => deletePending(p.id) }, "🗑️"));
+        return el("div", { class: "row" },
+          el("div", { class: "row-main" },
+            el("div", { class: "row-name" }, ch ? [swatch(ch.team), " " + ch.name] : p.channelId),
+            el("div", { class: "small muted" }, fmtDate(p.date))),
+          el("div", { class: "row-nums" },
+            el("div", { class: "v" }, fmtInt(p.views)),
+            el("div", { class: "s" }, `${fmtInt(p.subs)} subs`)),
+          el("button", { class: "btn btn-sm", onclick: () => deletePending(p.id) }, "Verwijder"));
       })) : null;
     const wf = el("details", { class: "wf" },
-      el("summary", {}, "📖 Hoe werkt het updaten?"),
+      el("summary", {}, "Hoe werkt het updaten?"),
       el("ol", {},
-        el("li", {}, "Klik ", el("b", {}, "➕ Stats invoeren"), " en vul de nieuwe cijfers in (alle kanalen in één keer kan!)."),
-        el("li", {}, "Klik ", el("b", {}, "⬇️ Export data.json"), " — je downloadt het nieuwe databestand."),
+        el("li", {}, "Klik ", el("b", {}, "Nieuwe cijfers"), " en vul de nieuwe stats in (alle kanalen in één keer kan)."),
+        el("li", {}, "Klik ", el("b", {}, "Export data.json"), " — je downloadt het nieuwe databestand."),
         el("li", {}, "Vervang ", el("b", {}, "dashboard/data.json"), " in GitHub en push (of upload via de GitHub-website)."),
-        el("li", {}, "Netlify deployt automatisch (±1 min). De ander klikt 🔄 Herladen en ziet alles.")),
-      el("p", { class: "small muted" }, "Je invoer wordt lokaal bewaard tot de push gelukt is — je raakt niets kwijt als je de pagina sluit."));
-    const dateCards = dates.map(d => {
+        el("li", {}, "Netlify deployt automatisch (± 1 min). De ander klikt Herladen en ziet alles.")),
+      el("p", { class: "small muted" }, "Je invoer blijft lokaal bewaard tot de push gelukt is — je raakt niets kwijt als je de pagina sluit."));
+    const dateSects = dates.map(d => {
       const rows = byDate.get(d).map(r => ({ ...r, ch: channelOf(r.chId) }))
         .sort((a, b) => (b.views) - (a.views));
-      return el("section", { class: "card" },
+      return el("section", { class: "sect" },
         el("div", { class: "hist-date" }, fmtDateLong(d)),
         el("div", { class: "table-scroll" }, el("table", { class: "dt" },
           el("thead", {}, el("tr", {}, el("th", {}, "Kanaal"), el("th", { class: "num" }, "Views"), el("th", { class: "num" }, "Δ views"), el("th", { class: "num" }, "Subs"), el("th", { class: "num" }, "Δ subs"))),
@@ -1303,14 +1353,14 @@
             const prevList = snapsOf(r.chId).filter(s => s.date < d);
             const prev = prevList[prevList.length - 1];
             return el("tr", {},
-              el("td", {}, `${MEDAL[r.ch.team]} ${r.ch.name}`, pendingIds.has(r.id) ? " 🕐" : ""),
+              el("td", {}, swatch(r.ch.team), " " + r.ch.name + (pendingIds.has(r.id) ? " · lokaal" : "")),
               el("td", { class: "num" }, fmtInt(r.views)),
               el("td", { class: "num" }, prev ? deltaSpan(r.views - prev.views) : el("span", { class: "muted" }, "–")),
               el("td", { class: "num" }, fmtInt(r.subs)),
               el("td", { class: "num" }, prev ? deltaSpan(r.subs - prev.subs) : el("span", { class: "muted" }, "–")));
           })))));
     });
-    return [pendingCard, wf, dateCards.length ? dateCards : el("section", { class: "card" }, el("p", { class: "chart-empty" }, "Nog geen data — voer de eerste stats in!"))];
+    return [pendingSect, wf, dateSects.length ? dateSects : el("section", { class: "sect" }, el("p", { class: "chart-empty" }, "Nog geen data — voer de eerste stats in.")) ];
   }
 
   /* ============================== render ================================= */
@@ -1319,8 +1369,8 @@
     const app = document.getElementById("app");
     app.textContent = "";
     app.append(header());
-    if (state.err) app.append(el("div", { class: "errbar" }, "⚠️ " + state.err + " ",
-      el("button", { class: "btn btn-sm", onclick: () => reload(true) }, "opnieuw proberen")));
+    if (state.err) app.append(el("div", { class: "errbar" }, state.err + " ",
+      el("button", { class: "btn btn-sm", onclick: () => reload(true) }, "Opnieuw proberen")));
     app.append(actionsRow());
     const fp = formPanel();
     if (fp) app.append(fp);
@@ -1332,7 +1382,7 @@
   window.addEventListener("resize", debounce(() => { for (const job of chartJobs) job(); }, 180));
   window.addEventListener("error", e => {
     const app = document.getElementById("app");
-    if (app && !app.querySelector(".errbar.js")) app.prepend(el("div", { class: "errbar js" }, "⚠️ Er ging iets mis: " + (e.message || "onbekende fout")));
+    if (app && !app.querySelector(".errbar.js")) app.prepend(el("div", { class: "errbar js" }, "Er ging iets mis: " + (e.message || "onbekende fout")));
   });
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden && Date.now() - lastFetch > 5 * 60e3 && !state.form && !pending.length) reload(false);
@@ -1349,7 +1399,7 @@
       state.err = "Kon data.json niet laden (" + e.message + "). Controleer of het bestand bestaat.";
       mergeStats();
     }
-    if (hash === "invoer") state.form = newFormState(); // #invoer als snelkoppeling naar het formulier
+    if (hash === "invoer") state.form = newFormState();
     render();
   })();
   </script>
